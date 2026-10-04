@@ -1,0 +1,22 @@
+[
+ {
+  "family": "Caveat",
+  "weight": "600",
+  "file": "Caveat.woff2"
+ },
+ {
+  "family": "DM Sans",
+  "weight": "400 700",
+  "file": "DMSans.woff2"
+ },
+ {
+  "family": "JetBrains Mono",
+  "weight": "400 700",
+  "file": "JetBrainsMono.woff2"
+ },
+ {
+  "family": "Oswald",
+  "weight": "400 700",
+  "file": "Oswald.woff2"
+ }
+]

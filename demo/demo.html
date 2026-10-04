@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RockSign — Product Demo</title>
+<style>
+__FONTS__
+:root{--ink:#171310;--ink2:#241D19;--cream:#F3EEE7;--paper:#FBF8F3;--red:#C81E17;--red2:#F0483E;--body:#4A433D;--muted:#9A9088;--line:#E2D9CE;--blush:#F6E1DE;--ok:#1F7A4D}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#000;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#0F0D0B;font-family:'DM Sans',Arial,sans-serif;color:var(--ink)}
+.scene{position:absolute;inset:0;visibility:hidden;opacity:0}
+.a{position:absolute}
+.osw{font-family:'Oswald',Arial,sans-serif}
+.mono{font-family:'JetBrains Mono','Courier New',monospace}
+.eyebrow{font-family:'Oswald',Arial,sans-serif;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--red)}
+
+/* intro / outro */
+#sc-intro,#sc-outro{background:var(--cream)}
+.proto{left:0;right:0;bottom:56px;text-align:center;font-size:22px;color:var(--muted);letter-spacing:2px}
+
+/* call */
+#sc-call{background:#0F0D0B;color:var(--cream)}
+#callTitle{left:40px;top:30px;font-size:26px;font-weight:600}
+#rec{left:520px;top:26px;display:flex;align-items:center;gap:10px;background:rgba(200,30,23,.18);border:1px solid rgba(240,72,62,.5);color:#F8B4AE;font-size:20px;font-weight:600;padding:6px 16px;border-radius:999px}
+#rec i{width:12px;height:12px;border-radius:50%;background:var(--red2);display:block}
+#timer{left:1100px;top:30px;width:240px;text-align:right;font-size:26px;color:#CFC6BC}
+.tile{top:96px;width:640px;height:480px;border-radius:20px;overflow:hidden;border:4px solid transparent}
+.tile .av{left:50%;top:44%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 76px 'Oswald',sans-serif;color:#fff}
+.tile .ring{left:50%;top:44%;width:200px;height:200px;margin:-100px 0 0 -100px;border-radius:50%;border:6px solid var(--red2);opacity:0}
+.tile .nm{left:20px;bottom:18px;background:rgba(0,0,0,.45);padding:8px 16px;border-radius:10px;font-size:22px;font-weight:600}
+.tile .nm span{font-weight:400;color:#CFC6BC}
+.tile .bars{right:22px;top:22px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;gap:4px}
+.tile .bars b{width:5px;height:6px;border-radius:3px;background:#fff;display:block}
+#tileL{left:40px;background:radial-gradient(circle at 50% 40%,#4B3A56,#221a29)}
+#tileL .av{background:linear-gradient(135deg,#B05A8E,#6C3A8C)}
+#tileR{left:700px;background:radial-gradient(circle at 50% 40%,#2F4A4A,#152222)}
+#tileR .av{background:linear-gradient(135deg,#2E8C7E,#1E5A70)}
+#caps{left:40px;top:608px;width:1300px;height:250px;display:flex;flex-direction:column;justify-content:flex-end;gap:18px}
+.cap{display:flex;gap:18px;align-items:flex-start}
+.cap .who{flex:none;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 20px 'Oswald',sans-serif;color:#fff;margin-top:2px}
+.cap .tx{font-size:32px;line-height:1.35}
+.cap .tx small{display:block;font-size:20px;font-weight:600;color:#9A9088;margin-bottom:2px}
+.cap .tx w{transition:none}
+#capPrev{opacity:.45}
+#ctrls{left:40px;width:1300px;top:930px;display:flex;justify-content:center;gap:22px}
+.cb{width:72px;height:72px;border-radius:50%;background:#2B2622;display:flex;align-items:center;justify-content:center}
+.cb svg{width:30px;height:30px;stroke:#F3EEE7;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#hang{width:120px;border-radius:36px;background:#D93025}
+#hang svg{stroke:none;fill:#fff;width:40px;height:40px}
+#toast{left:290px;top:92px;width:800px;display:flex;align-items:center;gap:18px;background:rgba(251,248,243,.97);color:var(--ink);padding:16px 22px;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.5);font-size:22px;line-height:1.35;opacity:0}
+#toast img{width:52px;height:52px;object-fit:contain;flex:none}
+#rs{left:1380px;top:24px;width:510px;height:1032px;background:var(--cream);border-radius:22px;padding:26px 24px;display:flex;flex-direction:column;gap:14px;color:var(--ink)}
+#rsHead{display:flex;align-items:center;gap:12px}
+#rsHead img{width:58px;height:58px;object-fit:contain}
+#rsHead .t{font:600 32px 'Oswald',sans-serif}
+#rsHead .live{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--red);color:var(--paper);font:600 16px 'Oswald',sans-serif;letter-spacing:2px;padding:5px 12px;border-radius:999px}
+#rsHead .live i{width:9px;height:9px;border-radius:50%;background:var(--paper);display:block}
+#rsWave{display:flex;align-items:center;gap:12px;background:var(--paper);border-radius:14px;padding:12px 16px;font-size:18px;color:var(--body)}
+#rsWave .w{flex:1;height:40px;display:flex;align-items:center;gap:3px}
+#rsWave .w b{flex:1;background:var(--red);border-radius:2px;height:4px;display:block}
+#rsSub{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+#rsSub .eyebrow{font-size:17px;letter-spacing:3px}
+#rsCount{font-size:17px;color:var(--body);font-weight:600}
+#cards{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--paper);border-radius:14px;padding:12px 16px;border-left:5px solid var(--red);display:none}
+.card .r{display:flex;justify-content:space-between;align-items:center}
+.card .l{font:600 15px 'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--red)}
+.card .c{font:500 15px 'JetBrains Mono',monospace;color:var(--red);background:var(--blush);padding:2px 10px;border-radius:999px}
+.card .v{font-size:21px;line-height:1.3;font-weight:500;margin-top:3px}
+#ghost{border:2px dashed #CDBFAF;border-radius:14px;padding:14px 16px;font-size:19px;color:var(--body);display:none}
+#rsFoot{margin-top:auto;font-size:17px;color:var(--body);line-height:1.4;border-top:1px solid var(--line);padding-top:14px}
+#callFade{inset:0;background:#000;opacity:0}
+
+/* drafting */
+#sc-draft{background:var(--cream)}
+#draftCard{left:460px;top:120px;width:1000px;height:820px;background:var(--paper);border-radius:28px;box-shadow:0 30px 80px rgba(23,19,16,.16);padding:56px 72px;display:flex;flex-direction:column;gap:14px}
+#draftCard img{width:96px;height:96px;object-fit:contain}
+#draftCard h2{font:600 56px 'Oswald',sans-serif;line-height:1.1}
+#draftCard .sub{font-size:22px;color:var(--body)}
+#steps{display:flex;flex-direction:column;gap:20px;margin-top:22px}
+.step{display:flex;align-items:center;gap:20px;font-size:28px;opacity:0}
+.step .ic{width:40px;height:40px;flex:none;position:relative}
+.step .sp{position:absolute;inset:0;border-radius:50%;border:4px solid var(--line);border-top-color:var(--red)}
+.step .ok{position:absolute;inset:0;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;opacity:0}
+.step .ok svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+#prog{margin-top:auto;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+#prog b{display:block;height:100%;width:0;background:var(--red)}
+
+/* inbox */
+#sc-inbox{background:#F7F5F2}
+#mailTop{left:0;top:0;width:1920px;height:76px;background:#fff;border-bottom:1px solid #E6E1DA;display:flex;align-items:center;gap:28px;padding:0 32px}
+#mailTop .logo{font:600 28px 'Oswald',sans-serif;color:#3D3833;width:210px}
+#mailTop .search{width:720px;height:46px;border-radius:23px;background:#F1EEEA;display:flex;align-items:center;padding:0 22px;font-size:20px;color:#8D857D}
+#mailTop .me{margin-left:auto;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#2E8C7E,#1E5A70);color:#fff;font:600 18px 'Oswald',sans-serif;display:flex;align-items:center;justify-content:center}
+#folders{left:0;top:76px;width:260px;bottom:0;padding:28px 18px;display:flex;flex-direction:column;gap:6px}
+#folders div{font-size:20px;color:#5B544D;padding:10px 16px;border-radius:0 20px 20px 0;display:flex;justify-content:space-between}
+#folders .on{background:#F6E1DE;color:var(--red);font-weight:700}
+#list{left:260px;top:76px;width:560px;bottom:0;border-right:1px solid #E6E1DA;background:#fff}
+.mi{padding:20px 26px;border-bottom:1px solid #EFEAE4;display:flex;flex-direction:column;gap:4px}
+.mi .f{display:flex;justify-content:space-between;font-size:20px;color:#3D3833}
+.mi .f span{color:#8D857D;font-size:17px}
+.mi .s{font-size:19px;color:#5B544D}
+.mi .p{font-size:17px;color:#8D857D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#newMail{background:#FFF7F5;border-left:5px solid var(--red)}
+#newMail .f,#newMail .s{font-weight:700;color:var(--ink)}
+#pane{left:820px;top:76px;right:0;bottom:0;padding:44px 64px;opacity:0}
+#pane h1{font:600 40px 'Oswald',sans-serif;line-height:1.2;color:var(--ink)}
+.from{display:flex;align-items:center;gap:16px;margin:24px 0 30px}
+.from img{width:56px;height:56px;object-fit:contain;background:var(--cream);border-radius:50%;padding:6px}
+.from .n{font-size:20px;font-weight:700}
+.from .e{font-size:17px;color:#8D857D}
+#mailBody{width:820px;background:#fff;border:1px solid #E6E1DA;border-radius:20px;padding:40px 44px;display:flex;flex-direction:column;gap:18px}
+#mailBody p{font-size:22px;line-height:1.5;color:var(--body)}
+#mailBody .sum{display:grid;grid-template-columns:200px 1fr;gap:10px 18px;background:var(--cream);border-radius:14px;padding:22px 26px;font-size:21px}
+#mailBody .sum b{color:var(--muted);font-weight:600;font-size:17px;letter-spacing:2px;text-transform:uppercase;font-family:'Oswald',sans-serif;padding-top:3px}
+#review{align-self:flex-start;background:var(--red);color:var(--paper);font:600 24px 'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;padding:16px 40px;border-radius:999px}
+#mailBody .fine{font-size:17px;color:#8D857D}
+
+/* agreement doc */
+#sc-doc{background:#E9E2D8}
+#docTop{left:0;top:0;width:1920px;height:88px;background:var(--ink);display:flex;align-items:center;gap:16px;padding:0 40px;color:var(--cream)}
+#docTop img{width:54px;height:54px;object-fit:contain}
+#docTop .b{font:600 28px 'Oswald',sans-serif}
+#docTop .d{font-size:20px;color:#CFC6BC;margin-left:24px}
+#status{margin-left:auto;font-size:19px;font-weight:700;padding:9px 20px;border-radius:999px;background:#3A2F28;color:#F8C9B8}
+#paper{left:60px;top:116px;width:1160px;height:940px;background:var(--paper);border-radius:18px;box-shadow:0 20px 60px rgba(23,19,16,.14);padding:40px 56px}
+#paper .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--line);padding-bottom:18px;margin-bottom:6px}
+#paper .hd h2{font:600 40px 'Oswald',sans-serif}
+#paper .hd .mono{font-size:17px;color:var(--red);font-weight:700;letter-spacing:1px}
+.cl{display:grid;grid-template-columns:44px 1fr 120px;gap:14px;align-items:center;padding:10px 14px;border-radius:12px;border-bottom:1px solid #EFE8DF}
+.cl .n{font:600 20px 'JetBrains Mono',monospace;color:var(--muted)}
+.cl .h{font:600 17px 'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--red)}
+.cl .t{font-size:21px;line-height:1.35;color:var(--ink)}
+.chip{justify-self:end;font:500 17px 'JetBrains Mono',monospace;color:var(--red);background:var(--blush);padding:6px 12px;border-radius:999px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.chip .eq{display:none;gap:2px;align-items:flex-end;height:16px}
+.chip .eq b{width:3px;background:var(--red);display:block;border-radius:1px}
+#stamp{left:860px;top:930px;font:700 54px 'Oswald',sans-serif;color:var(--ok);border:6px solid var(--ok);border-radius:14px;padding:4px 26px;letter-spacing:6px;opacity:0}
+#side{left:1250px;top:116px;width:610px;display:flex;flex-direction:column;gap:20px}
+.box{background:var(--paper);border-radius:18px;padding:24px 28px;box-shadow:0 10px 30px rgba(23,19,16,.08)}
+.box h4{font:600 17px 'Oswald',sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+#wave{height:96px;display:flex;align-items:center;gap:2px;position:relative}
+#wave b{flex:1;border-radius:2px;background:#D6CABB;display:block}
+#playhead{top:-6px;bottom:-6px;width:3px;background:var(--ink);border-radius:2px;opacity:0}
+.wmeta{display:flex;justify-content:space-between;font:500 16px 'JetBrains Mono',monospace;color:var(--muted);margin-top:10px}
+#trans{min-height:118px;font-size:22px;line-height:1.45;color:var(--body)}
+#trans small{display:block;font:600 16px 'JetBrains Mono',monospace;color:var(--red);margin-bottom:6px}
+.sig{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #EFE8DF}
+.sig:last-child{border-bottom:none}
+.sig .av{width:48px;height:48px;border-radius:50%;color:#fff;font:600 18px 'Oswald',sans-serif;display:flex;align-items:center;justify-content:center;flex:none}
+.sig .nm{font-size:21px;font-weight:600}
+.sig .st{font-size:17px;color:var(--muted)}
+.sig .bd{margin-left:auto;font-size:17px;font-weight:700;padding:6px 14px;border-radius:999px}
+.bd.ok{background:#E2F1E8;color:var(--ok)}
+.bd.wait{background:#F6EBD9;color:#8A5A12}
+#signBtn{background:var(--red);color:var(--paper);font:600 28px 'Oswald',sans-serif;letter-spacing:3px;text-transform:uppercase;text-align:center;padding:22px;border-radius:18px}
+#dl{background:var(--ink);color:var(--cream);font:600 24px 'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;text-align:center;padding:22px;border-radius:18px;display:none}
+#modalBg{inset:0;background:rgba(23,19,16,.55);opacity:0}
+#modal{left:510px;top:230px;width:900px;background:var(--paper);border-radius:24px;padding:40px 48px;box-shadow:0 30px 90px rgba(0,0,0,.4);opacity:0}
+#modal h3{font:600 38px 'Oswald',sans-serif}
+#modal .s{font-size:20px;color:var(--body);margin-top:6px}
+#pad{margin-top:26px;height:230px;border:2px dashed #CDBFAF;border-radius:16px;position:relative;background:#fff}
+#pad .base{left:40px;right:40px;bottom:58px;border-top:2px solid var(--line)}
+#pad .x{left:44px;bottom:66px;font-size:26px;color:var(--muted)}
+#sigClip{left:96px;top:30px;height:180px;overflow:hidden;width:0}
+#sigText{font:600 128px 'Caveat',cursive;color:#1D2B5C;white-space:nowrap;line-height:1.3}
+#mrow{display:flex;justify-content:space-between;align-items:center;margin-top:26px}
+#mrow .legal{font-size:17px;color:var(--muted);width:520px;line-height:1.4}
+#adopt{background:var(--red);color:var(--paper);font:600 24px 'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;padding:16px 34px;border-radius:999px}
+#doneToast{left:610px;top:108px;width:700px;text-align:center;background:var(--ink);color:var(--cream);font-size:22px;padding:16px 24px;border-radius:14px;opacity:0;box-shadow:0 16px 40px rgba(0,0,0,.3)}
+
+/* overlays */
+#narr{left:260px;width:1400px;bottom:48px;text-align:center;opacity:0}
+#narr span{display:inline-block;background:rgba(23,19,16,.88);color:var(--cream);font-size:30px;line-height:1.4;padding:14px 30px;border-radius:14px}
+#cursor{left:0;top:0;width:40px;height:40px;opacity:0;pointer-events:none}
+#ripple{left:0;top:0;width:90px;height:90px;margin:-45px 0 0 -45px;border-radius:50%;background:rgba(200,30,23,.35);border:3px solid rgba(200,30,23,.7);opacity:0}
+
+/* interactive player chrome (hidden when recording) */
+#start{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;background:rgba(15,13,11,.82);cursor:pointer;z-index:10;color:var(--cream);font-family:'DM Sans',sans-serif}
+#start .pb{width:120px;height:120px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(200,30,23,.5)}
+#start .pb svg{width:48px;height:48px;fill:#fff;margin-left:8px}
+#start p{font:600 26px 'Oswald',sans-serif;letter-spacing:3px;text-transform:uppercase}
+#start small{font-size:16px;color:#9A9088}
+#bar{position:fixed;left:0;right:0;bottom:0;height:8px;background:rgba(255,255,255,.12);z-index:9;cursor:pointer;opacity:0;transition:opacity .2s}
+body:hover #bar{opacity:1}
+#bar b{display:block;height:100%;width:0;background:var(--red2)}
+body.rec #start,body.rec #bar{display:none}
+</style></head>
+<body>
+<div id="stage">
+
+<!-- INTRO -->
+<div class="scene" id="sc-intro" data-scenes="intro">
+  <img id="introLogo" class="a" src="__WORDMARK__" alt="RockSign" style="left:385px;top:200px;width:1150px;height:575px;object-fit:contain">
+  <div id="introTag" class="a eyebrow" style="left:0;right:0;top:810px;text-align:center;font-size:30px;letter-spacing:10px">Product demo</div>
+  <div class="a proto">Concept prototype · simulated call</div>
+</div>
+
+<!-- CALL -->
+<div class="scene" id="sc-call" data-scenes="call hangup">
+  <div id="callTitle" class="a">Project kickoff · Northside Studio</div>
+  <div id="rec" class="a"><i></i>REC · RockSign</div>
+  <div id="timer" class="a mono">00:00</div>
+  <div id="tileL" class="a tile"><div class="a ring"></div><div class="a av">LP</div><div class="a nm">Lucy Parker <span>(you)</span></div><div class="a bars"><b></b><b></b><b></b></div></div>
+  <div id="tileR" class="a tile"><div class="a ring"></div><div class="a av">ME</div><div class="a nm">Mark Ellis <span>· Northside Studio</span></div><div class="a bars"><b></b><b></b><b></b></div></div>
+  <div id="caps" class="a">
+    <div class="cap" id="capPrev"><div class="who"></div><div class="tx"></div></div>
+    <div class="cap" id="capCur"><div class="who"></div><div class="tx"></div></div>
+  </div>
+  <div id="ctrls" class="a">
+    <div class="cb"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></div>
+    <div class="cb"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-4v12l-6-4"/></svg></div>
+    <div class="cb"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 10.5a2 2 0 1 0 0 3M17 10.5a2 2 0 1 0 0 3"/></svg></div>
+    <div class="cb"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></div>
+    <div class="cb" id="hang"><svg viewBox="0 0 24 24"><path d="M12 9c-3.2 0-6.2.9-8.6 2.5-.6.4-.9 1.2-.6 1.9l1 2.2c.3.7 1.1 1 1.8.8l3-1c.6-.2 1-.8 1-1.4v-1.6c.8-.2 1.6-.3 2.4-.3s1.6.1 2.4.3V14c0 .6.4 1.2 1 1.4l3 1c.7.2 1.5-.1 1.8-.8l1-2.2c.3-.7 0-1.5-.6-1.9C18.2 9.9 15.2 9 12 9z"/></svg></div>
+  </div>
+  <div id="toast" class="a"><img src="__ISO__" alt=""><div><b>RockSign joined the call.</b> Everyone was notified that this call is being recorded to draft the agreement.</div></div>
+  <div id="rs" class="a">
+    <div id="rsHead"><img src="__ISO__" alt=""><div class="t">RockSign</div><div class="live"><i></i>LIVE</div></div>
+    <div id="rsWave"><span>Listening</span><div class="w"></div></div>
+    <div id="rsSub"><span class="eyebrow">Agreed so far</span><span id="rsCount">0 terms</span></div>
+    <div id="cards"></div>
+    <div id="ghost">Detecting a term…</div>
+    <div id="rsFoot">When the call ends, the draft goes to <b>Lucy Parker</b> and <b>Mark Ellis</b> to sign.</div>
+  </div>
+  <div id="callFade" class="a"></div>
+</div>
+
+<!-- DRAFTING -->
+<div class="scene" id="sc-draft" data-scenes="drafting">
+  <div id="draftCard" class="a">
+    <img src="__ISO__" alt="">
+    <h2>Drafting your agreement</h2>
+    <div class="sub" id="draftSub"></div>
+    <div id="steps"></div>
+    <div id="prog"><b></b></div>
+  </div>
+</div>
+
+<!-- INBOX -->
+<div class="scene" id="sc-inbox" data-scenes="inbox">
+  <div id="mailTop" class="a"><div class="logo">Mail</div><div class="search">Search mail</div><div class="me">ME</div></div>
+  <div id="folders" class="a"><div class="on">Inbox <span>1</span></div><div>Starred</div><div>Sent</div><div>Drafts</div><div>Archive</div></div>
+  <div id="list" class="a">
+    <div class="mi" id="newMail"><div class="f">RockSign for Lucy Parker <span>now</span></div><div class="s">Lucy Parker sent you an agreement to sign</div><div class="p">Services agreement · Landing page redesign + 3 social media pieces</div></div>
+    <div class="mi"><div class="f">Dana Whitfield <span>11:02 AM</span></div><div class="s">Launch plan v3</div><div class="p">Attached the updated launch timeline for November…</div></div>
+    <div class="mi"><div class="f">Figma <span>Yesterday</span></div><div class="s">Your weekly design digest</div><div class="p">3 files were updated in Northside Studio…</div></div>
+    <div class="mi"><div class="f">Owen Brooks <span>Yesterday</span></div><div class="s">Re: Landing page budget</div><div class="p">Approved. Let's keep it under 1.5k if possible.</div></div>
+    <div class="mi"><div class="f">Calendar <span>Oct 3</span></div><div class="s">Project kickoff · Lucy Parker</div><div class="p">Sunday, Oct 4 · Video call</div></div>
+  </div>
+  <div id="pane" class="a">
+    <h1>Lucy Parker sent you an agreement to sign</h1>
+    <div class="from"><img src="__ISO__" alt=""><div><div class="n">RockSign for Lucy Parker</div><div class="e">to Mark Ellis · now</div></div></div>
+    <div id="mailBody">
+      <p>Hi Mark, here's the agreement from today's call, drafted from what you both said. Review it and sign in one tap.</p>
+      <div class="sum">
+        <b>Scope</b><span>Landing page redesign + 3 social media pieces</span>
+        <b>Fee</b><span>US$ 1,200 · 50% upfront</span>
+        <b>Deadline</b><span>Friday, October 23, 2026</span>
+      </div>
+      <div id="review">Review &amp; sign</div>
+      <div class="fine">Every clause links to the moment it was agreed on the call.</div>
+    </div>
+  </div>
+</div>
+
+<!-- AGREEMENT + SIGN -->
+<div class="scene" id="sc-doc" data-scenes="agreement sign">
+  <div id="docTop" class="a"><img src="__ISO__" alt=""><div class="b">RockSign</div><div class="d">Services Agreement · Lucy Parker × Northside Studio</div><div id="status">Awaiting your signature</div></div>
+  <div id="paper" class="a">
+    <div class="hd"><h2>Services Agreement</h2><div class="mono">DRAFTED FROM CALL · OCT 4, 2026</div></div>
+    <div id="clauses"></div>
+  </div>
+  <div id="stamp" class="a">SIGNED</div>
+  <div id="side" class="a">
+    <div class="box"><h4>Call recording</h4><div id="wave"><div id="playhead" class="a"></div></div><div class="wmeta"><span id="wpos">00:00</span><span id="wdur">00:00</span></div></div>
+    <div class="box"><h4>Transcript</h4><div id="trans"></div></div>
+    <div class="box"><h4>Signatures</h4>
+      <div class="sig"><div class="av" style="background:linear-gradient(135deg,#B05A8E,#6C3A8C)">LP</div><div><div class="nm">Lucy Parker</div><div class="st">Sent the agreement · 4:12 PM</div></div><div class="bd ok">✓ Signed</div></div>
+      <div class="sig"><div class="av" style="background:linear-gradient(135deg,#2E8C7E,#1E5A70)">ME</div><div><div class="nm">Mark Ellis</div><div class="st" id="markSt">Northside Studio</div></div><div class="bd wait" id="markBd">Pending</div></div>
+    </div>
+    <div id="signBtn">Sign agreement</div>
+    <div id="dl">⤓ Download signed PDF</div>
+  </div>
+  <div id="modalBg" class="a"></div>
+  <div id="modal" class="a">
+    <h3>Sign as Mark Ellis</h3>
+    <div class="s">Draw your signature below.</div>
+    <div id="pad"><div class="a base"></div><div class="a x">×</div><div id="sigClip" class="a"><div id="sigText">Mark Ellis</div></div></div>
+    <div id="mrow"><div class="legal">By signing, you agree to this electronic signature and to the terms above.</div><div id="adopt">Adopt &amp; sign</div></div>
+  </div>
+  <div id="doneToast" class="a">✓ Signed copies sent to Lucy Parker and Mark Ellis</div>
+</div>
+
+<!-- OUTRO -->
+<div class="scene" id="sc-outro" data-scenes="outro">
+  <img id="outroLogo" class="a" src="__WORDMARK__" alt="RockSign" style="left:510px;top:170px;width:900px;height:450px;object-fit:contain">
+  <div id="outroTag" class="a osw" style="left:0;right:0;top:680px;text-align:center;font-size:80px;font-weight:700;text-transform:uppercase;color:var(--ink)">What's said <span style="color:var(--red)">gets signed.</span></div>
+  <div class="a proto">Concept prototype · RockSign 2026</div>
+</div>
+
+<div id="narr" class="a"><span></span></div>
+<div id="ripple" class="a"></div>
+<svg id="cursor" class="a" viewBox="0 0 24 24"><path d="M4 2l15 10.5-6.6 1.3 4 7.6-2.9 1.5-4-7.7L4 20z" fill="#fff" stroke="#171310" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</div>
+
+<div id="start"><div class="pb"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></div><p>Play the demo</p><small>Space: pause · ← →: seek · Sound on</small></div>
+<div id="bar"><b></b></div>
+
+<script>
+const TL = __TIMELINE__;
+const ENV = __ENV__;
+const AUDIO_SRC = "__AUDIO__";
+
+const $ = (s) => document.querySelector(s);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const ramp = (t, a, d) => clamp((t - a) / d);
+const fmt = (s) => { s = Math.max(0, Math.floor(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+const env = (t) => (ENV[Math.floor(t * 30)] || 0) / 100;
+const hash = (i) => { const x = Math.sin(i * 12.9898) * 43758.5453; return x - Math.floor(x); };
+
+const SC = Object.fromEntries(TL.scenes.map((s) => [s.name, s]));
+const callLines = TL.lines.filter((l) => l.scene === 'call' && !l.replay);
+const dets = callLines.filter((l) => l.detect);
+const byKey = Object.fromEntries(dets.map((l) => [l.detect.key, l]));
+const replay = TL.lines.find((l) => l.replay);
+const replaySrc = TL.lines.find((l) => l.id === replay.replay);
+const narr = TL.lines.filter((l) => l.who === 'narrator');
+const clock = (l) => l.start - TL.callStart;
+const CALL_DUR = TL.callEnd - TL.callStart;
+const COLORS = { lucy: 'linear-gradient(135deg,#B05A8E,#6C3A8C)', mark: 'linear-gradient(135deg,#2E8C7E,#1E5A70)' };
+const PEOPLE = TL.people;
+
+/* ---------- build dynamic DOM ---------- */
+const scenes = [...document.querySelectorAll('.scene')].map((el) => {
+  const names = el.dataset.scenes.split(' ');
+  return { el, start: SC[names[0]].start, end: SC[names[names.length - 1]].end };
+});
+
+const rsBars = $('#rsWave .w');
+for (let i = 0; i < 34; i++) rsBars.appendChild(document.createElement('b'));
+
+const cardEls = dets.map((l) => {
+  const c = document.createElement('div');
+  c.className = 'card';
+  c.innerHTML = `<div class="r"><span class="l">${l.detect.label}</span><span class="c">▶ ${fmt(clock(l))}</span></div><div class="v">${l.detect.value}</div>`;
+  $('#cards').appendChild(c);
+  return c;
+});
+
+const STEPS = [
+  `Transcribed ${fmt(CALL_DUR).replace(/^0/, '')} of conversation`,
+  `Identified ${dets.length} agreed terms`,
+  'Drafted a 9-clause services agreement',
+  'Linked every clause to its moment in the call',
+  'Sent to Lucy Parker and Mark Ellis',
+];
+$('#draftSub').textContent = `Project kickoff · ${fmt(CALL_DUR).replace(/^0/, '')} · Lucy Parker & Mark Ellis`;
+const stepEls = STEPS.map((s) => {
+  const d = document.createElement('div');
+  d.className = 'step';
+  d.innerHTML = `<div class="ic"><div class="sp"></div><div class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div><div>${s}</div>`;
+  $('#steps').appendChild(d);
+  return d;
+});
+
+const CLAUSES = [
+  ['Parties', 'Lucy Parker (“Designer”) and Northside Studio, represented by Mark Ellis (“Client”).', null],
+  ['Deliverables', 'Landing page redesign and three (3) social media pieces for the product launch.', 'deliverables'],
+  ['Start date', 'Work begins on Monday, October 5, 2026.', 'start'],
+  ['Deadline', 'Final delivery no later than Friday, October 23, 2026.', 'deadline'],
+  ['Fee', 'US$ 1,200 for the scope described above.', 'fee'],
+  ['Payment', '50% upfront. The remaining 50% upon delivery of the final files.', 'payment'],
+  ['Revisions', 'Two (2) rounds included. Further changes billed at US$ 60 per hour.', 'revisions'],
+  ['Handoff', 'Client receives the Figma source file and all exported assets.', 'handoff'],
+  ['Record', 'Drafted from a call recorded on October 4, 2026. Both parties were notified.', null],
+];
+const chipEls = [];
+let payRow = null, payChip = null;
+CLAUSES.forEach(([h, t, key], i) => {
+  const r = document.createElement('div');
+  r.className = 'cl';
+  const chip = key ? `<div class="chip"><span class="eq"><b></b><b></b><b></b></span><span class="lbl">▶ ${fmt(clock(byKey[key]))}</span></div>` : '<div></div>';
+  r.innerHTML = `<div class="n">${String(i + 1).padStart(2, '0')}</div><div><div class="h">${h}</div><div class="t">${t}</div></div>${chip}`;
+  $('#clauses').appendChild(r);
+  if (key) chipEls.push(r.querySelector('.chip'));
+  if (key === 'payment') { payRow = r; payChip = r.querySelector('.chip'); }
+});
+
+const WAVE_N = 110;
+const waveBars = [];
+for (let i = 0; i < WAVE_N; i++) {
+  const b = document.createElement('b');
+  const t0 = TL.callStart + (i / WAVE_N) * CALL_DUR;
+  let m = 0;
+  for (let k = 0; k < 6; k++) m = Math.max(m, env(t0 + (k / 6) * (CALL_DUR / WAVE_N)));
+  b.style.height = Math.max(6, m * 92) + 'px';
+  $('#wave').insertBefore(b, $('#playhead'));
+  waveBars.push(b);
+}
+$('#wdur').textContent = fmt(CALL_DUR);
+
+/* ---------- cursor choreography (stage coordinates, measured from the layout) ---------- */
+let K = [], VIS = [], CLICKS = [];
+function anchor(el) {
+  const s = $('#stage').getBoundingClientRect(), r = el.getBoundingClientRect(), k = s.width / 1920;
+  return { x: (r.left - s.left + r.width / 2) / k, y: (r.top - s.top + r.height / 2) / k, r, k, s };
+}
+function plan() {
+  K = []; VIS = []; CLICKS = [];
+  const key = (t, p) => K.push({ t, x: p.x, y: p.y });
+  // hang up
+  const hs = SC.hangup.start, H = anchor($('#hang'));
+  key(hs - 0.3, { x: 900, y: 720 }); key(hs + 0.9, H); CLICKS.push(hs + 1.0); VIS.push([hs - 0.3, hs + 1.5]);
+  // open the email
+  const ie = SC.inbox.end, R = anchor($('#review'));
+  key(ie - 2.6, { x: 1500, y: 860 }); key(ie - 1.3, R); CLICKS.push(ie - 0.9); VIS.push([ie - 2.6, ie + 0.2]);
+  // replay the payment clause
+  const P = anchor(payChip);
+  key(replay.start - 2.4, { x: 1000, y: 900 }); key(replay.start - 0.9, P); CLICKS.push(replay.start - 0.25);
+  // sign
+  const ss = SC.sign.start, SB = anchor($('#signBtn'));
+  key(ss + 0.2, P); key(ss + 1.0, SB); CLICKS.push(ss + 1.1);
+  const clip = anchor($('#sigClip')), sigW = $('#sigText').scrollWidth;
+  const x0 = (clip.r.left - clip.s.left) / clip.k, y0 = clip.y + 10;
+  key(ss + 1.75, { x: x0, y: y0 });
+  for (let f = 0; f <= 1.0001; f += 0.05) key(ss + 1.8 + f * 2.0, { x: x0 + f * sigW, y: y0 + Math.sin(f * 26) * 22 });
+  const A = anchor($('#adopt'));
+  key(ss + 4.6, A); CLICKS.push(ss + 4.7);
+  VIS.push([replay.start - 2.4, ss + 5.3]);
+  K.sort((a, b) => a.t - b.t);
+  window.SIG_W = sigW;
+}
+function cursorAt(t) {
+  if (!K.length) return null;
+  if (t <= K[0].t) return K[0];
+  for (let i = 0; i < K.length - 1; i++) {
+    const a = K[i], b = K[i + 1];
+    if (t >= a.t && t < b.t) { const e = ease((t - a.t) / (b.t - a.t)); return { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e }; }
+  }
+  return K[K.length - 1];
+}
+
+/* ---------- captions with word-by-word reveal ---------- */
+function setCap(el, l, t, full) {
+  const tx = el.querySelector('.tx'), who = el.querySelector('.who');
+  if (!l) { el.style.visibility = 'hidden'; el.dataset.id = ''; return; }
+  el.style.visibility = 'visible';
+  if (el.dataset.id !== l.id) {
+    el.dataset.id = l.id;
+    who.textContent = PEOPLE[l.who].initials; who.style.background = COLORS[l.who];
+    tx.innerHTML = `<small>${PEOPLE[l.who].name}</small>` + l.text.split(' ').map((w) => `<w>${w}</w>`).join(' ');
+  }
+  const ws = tx.querySelectorAll('w');
+  const n = full ? ws.length : Math.ceil(ws.length * clamp((t - l.start) / ((l.end - l.start) * 0.9)));
+  ws.forEach((w, i) => (w.style.opacity = i < n ? 1 : 0));
+}
+
+/* ---------- the whole picture as a function of t ---------- */
+function render(t) {
+  for (const s of scenes) {
+    const op = t < s.start ? 0 : t < s.end + 0.5 ? ramp(t, s.start, 0.45) : 0;
+    s.el.style.opacity = op; s.el.style.visibility = op > 0 ? 'visible' : 'hidden';
+  }
+
+  // intro
+  const ii = SC.intro.start;
+  $('#introLogo').style.transform = `scale(${0.94 + 0.06 * ease(ramp(t, ii, 1.2))})`;
+  $('#introLogo').style.opacity = ramp(t, ii, 0.9);
+  $('#introTag').style.opacity = ramp(t, ii + 0.8, 0.6);
+
+  // call
+  if (t >= SC.call.start - 0.1 && t < SC.hangup.end + 0.6) {
+    const ct = t - TL.callStart;
+    $('#timer').textContent = fmt(Math.min(ct, CALL_DUR));
+    $('#rec i').style.opacity = 0.35 + 0.65 * (Math.sin(t * 4) > 0 ? 1 : 0.4);
+    let cur = null, prev = null;
+    for (const l of callLines) if (l.start <= t) { prev = cur; cur = l; }
+    const speaking = cur && t < cur.end ? cur.who : null;
+    const a = env(t);
+    for (const [id, who] of [['#tileL', 'lucy'], ['#tileR', 'mark']]) {
+      const on = speaking === who, tile = $(id);
+      tile.style.borderColor = on ? '#F0483E' : 'transparent';
+      tile.style.boxShadow = on ? '0 0 0 2px rgba(240,72,62,.35), 0 0 40px rgba(240,72,62,.25)' : 'none';
+      const ring = tile.querySelector('.ring');
+      ring.style.opacity = on ? 0.25 + a * 0.75 : 0;
+      ring.style.transform = `scale(${1 + (on ? a * 0.16 : 0)})`;
+      tile.querySelectorAll('.bars b').forEach((b, i) => (b.style.height = (on ? 6 + a * (i === 1 ? 22 : 14) * (0.7 + 0.3 * hash(Math.floor(t * 15) + i)) : 6) + 'px'));
+    }
+    const showCur = cur && t < cur.end + 2.2;
+    setCap($('#capCur'), showCur ? cur : null, t, false);
+    setCap($('#capPrev'), showCur ? prev : null, t, true);
+    const tt = ramp(ct, 0.3, 0.4) * (1 - ramp(ct, 5.6, 0.5));
+    $('#toast').style.opacity = tt; $('#toast').style.transform = `translateY(${(1 - tt) * -14}px)`;
+    rsBars.querySelectorAll('b').forEach((b, i) => { const v = env(t - (33 - i) * 0.045); b.style.height = 4 + v * 34 + 'px'; });
+    let n = 0;
+    dets.forEach((l, i) => {
+      const c = cardEls[i], p = ramp(t, l.end - 0.15, 0.45);
+      if (p > 0) {
+        n++; c.style.display = 'block'; c.style.opacity = p; c.style.transform = `translateY(${(1 - ease(p)) * 16}px)`;
+        const glow = 1 - ramp(t, l.end + 0.3, 1.6);
+        c.style.background = glow > 0 ? `rgb(${251 - 5 * glow},${248 - 23 * glow},${243 - 21 * glow})` : '';
+      } else c.style.display = 'none';
+    });
+    $('#rsCount').textContent = n === 1 ? '1 term' : `${n} terms`;
+    const det = cur && cur.detect && t >= cur.start && t < cur.end - 0.15;
+    $('#ghost').style.display = det ? 'block' : 'none';
+    $('#ghost').style.opacity = 0.55 + 0.45 * Math.abs(Math.sin(t * 3));
+    const hs = SC.hangup.start, pressed = t >= hs + 1.0 && t < hs + 1.25;
+    $('#hang').style.transform = pressed ? 'scale(.92)' : 'none';
+    $('#callFade').style.opacity = ramp(t, hs + 1.25, 0.5);
+  }
+
+  // drafting
+  const ds = SC.drafting.start;
+  stepEls.forEach((el, i) => {
+    const at = ds + 0.8 + i * 1.65, done = at + 1.15;
+    el.style.opacity = ramp(t, at, 0.3);
+    el.style.transform = `translateX(${(1 - ease(ramp(t, at, 0.4))) * 18}px)`;
+    el.querySelector('.sp').style.transform = `rotate(${(t * 420) % 360}deg)`;
+    el.querySelector('.sp').style.opacity = t < done ? 1 : 0;
+    el.querySelector('.ok').style.opacity = ramp(t, done, 0.2);
+  });
+  $('#prog b').style.width = ramp(t, ds + 0.5, 0.8 + 4 * 1.65 + 1.0) * 100 + '%';
+
+  // inbox
+  const is = SC.inbox.start, ie = SC.inbox.end;
+  const nm = ramp(t, is + 0.3, 0.45);
+  $('#newMail').style.opacity = nm; $('#newMail').style.transform = `translateY(${(1 - ease(nm)) * -30}px)`;
+  $('#pane').style.opacity = ramp(t, is + 1.1, 0.4);
+  $('#review').style.transform = t >= ie - 0.9 && t < ie - 0.65 ? 'scale(.94)' : 'none';
+
+  // agreement + replay
+  const N = narr.find((l) => l.scene === 'agreement');
+  chipEls.forEach((c, i) => {
+    const p = ramp(t, N.start + 0.6 + i * 0.32, 0.5), pulse = Math.sin(p * Math.PI);
+    c.style.transform = `scale(${1 + 0.12 * pulse})`;
+    c.style.boxShadow = pulse > 0.01 ? `0 0 0 ${4 * pulse}px rgba(200,30,23,.25)` : 'none';
+  });
+  const playing = t >= replay.start - 0.25 && t < replay.end + 0.3;
+  payRow.style.background = playing ? '#F6E1DE' : '';
+  payChip.querySelector('.eq').style.display = playing ? 'flex' : 'none';
+  payChip.querySelector('.lbl').textContent = (playing ? '' : '▶ ') + fmt(clock(replaySrc));
+  payChip.querySelectorAll('.eq b').forEach((b, i) => (b.style.height = 4 + env(t) * 12 * (0.6 + 0.4 * hash(Math.floor(t * 12) + i * 7)) + 'px'));
+  const pos = playing ? clock(replaySrc) + clamp(t - replay.start, 0, replay.end - replay.start) : 0;
+  $('#playhead').style.opacity = playing ? 1 : 0;
+  $('#playhead').style.left = (pos / CALL_DUR) * 100 + '%';
+  const played = playing ? Math.floor((pos / CALL_DUR) * WAVE_N) : -1, from = Math.floor((clock(replaySrc) / CALL_DUR) * WAVE_N);
+  waveBars.forEach((b, i) => (b.style.background = playing && i >= from && i <= played ? '#C81E17' : '#D6CABB'));
+  $('#wpos').textContent = fmt(pos);
+  const tr = $('#trans');
+  if (playing) {
+    if (tr.dataset.mode !== 'play') { tr.dataset.mode = 'play'; tr.innerHTML = `<small>LUCY PARKER · ${fmt(clock(replaySrc))}</small>` + replay.text.split(' ').map((w) => `<w>${w}</w>`).join(' '); }
+    const ws = tr.querySelectorAll('w'), n = Math.ceil(ws.length * clamp((t - replay.start) / ((replay.end - replay.start) * 0.9)));
+    ws.forEach((w, i) => (w.style.opacity = i < n ? 1 : 0.25));
+  } else if (tr.dataset.mode !== 'idle') { tr.dataset.mode = 'idle'; tr.innerHTML = 'Tap <b style="color:#C81E17">▶</b> on any clause to hear the exact moment it was agreed.'; }
+
+  // sign
+  const ss = SC.sign.start;
+  $('#signBtn').style.transform = t >= ss + 1.1 && t < ss + 1.35 ? 'scale(.96)' : 'none';
+  const mo = ramp(t, ss + 1.3, 0.3) * (1 - ramp(t, ss + 4.9, 0.3));
+  $('#modalBg').style.opacity = mo; $('#modal').style.opacity = mo;
+  $('#modal').style.transform = `translateY(${(1 - ease(ramp(t, ss + 1.3, 0.35))) * 30}px)`;
+  $('#sigClip').style.width = ramp(t, ss + 1.8, 2.0) * ((window.SIG_W || 500) + 20) + 'px';
+  $('#adopt').style.transform = t >= ss + 4.7 && t < ss + 4.95 ? 'scale(.94)' : 'none';
+  const signed = t >= ss + 5.0;
+  $('#markBd').className = 'bd ' + (signed ? 'ok' : 'wait'); $('#markBd').textContent = signed ? '✓ Signed' : 'Pending';
+  $('#markSt').textContent = signed ? 'Signed just now · 4:15 PM' : 'Northside Studio';
+  $('#status').textContent = signed ? '✓ Completed · both parties signed' : 'Awaiting your signature';
+  $('#status').style.background = signed ? '#1F7A4D' : '#3A2F28'; $('#status').style.color = signed ? '#fff' : '#F8C9B8';
+  $('#signBtn').style.display = signed ? 'none' : 'block'; $('#dl').style.display = signed ? 'block' : 'none';
+  const sp = ramp(t, ss + 5.2, 0.35);
+  $('#stamp').style.opacity = sp; $('#stamp').style.transform = `rotate(-8deg) scale(${1.6 - 0.6 * ease(sp)})`;
+  const dt = ramp(t, ss + 5.8, 0.4); $('#doneToast').style.opacity = dt; $('#doneToast').style.transform = `translateY(${(1 - dt) * -12}px)`;
+
+  // outro
+  const os = SC.outro.start;
+  $('#outroLogo').style.opacity = ramp(t, os + 0.1, 0.8); $('#outroLogo').style.transform = `scale(${0.94 + 0.06 * ease(ramp(t, os, 1.2))})`;
+  $('#outroTag').style.opacity = ramp(t, os + 0.9, 0.6);
+
+  // narrator subtitle
+  const nl = narr.find((l) => t >= l.start - 0.1 && t < l.end + 0.4);
+  $('#narr').style.opacity = nl ? Math.min(ramp(t, nl.start - 0.1, 0.25), 1 - ramp(t, nl.end + 0.15, 0.25)) : 0;
+  if (nl && $('#narr span').dataset.id !== nl.id) { $('#narr span').dataset.id = nl.id; $('#narr span').textContent = nl.text; }
+
+  // cursor + click ripple
+  const vis = VIS.some(([a, b]) => t >= a && t < b), c = cursorAt(t);
+  $('#cursor').style.opacity = vis && c ? 1 : 0;
+  if (c) $('#cursor').style.transform = `translate(${c.x - 6}px, ${c.y - 4}px)`;
+  const ck = CLICKS.find((x) => t >= x && t < x + 0.45);
+  if (ck !== undefined && c) {
+    const p = (t - ck) / 0.45;
+    $('#ripple').style.opacity = 0.9 * (1 - p);
+    $('#ripple').style.transform = `translate(${c.x}px, ${c.y}px) scale(${0.3 + p})`;
+  } else $('#ripple').style.opacity = 0;
+}
+
+/* ---------- player ---------- */
+function fit() {
+  const k = Math.min(innerWidth / 1920, innerHeight / 1080);
+  $('#stage').style.transform = `translate(${(innerWidth - 1920 * k) / 2}px, ${(innerHeight - 1080 * k) / 2}px) scale(${k})`;
+}
+const RECORD = new URLSearchParams(location.search).has('record');
+window.DURATION = TL.duration;
+fit();
+document.fonts.ready.then(() => {
+  plan(); render(0);
+  window.READY = true;
+});
+window.renderAt = render;
+
+if (RECORD) document.body.classList.add('rec');
+else {
+  const audio = new Audio(AUDIO_SRC);
+  let raf = 0;
+  const loop = () => { render(audio.currentTime); $('#bar b').style.width = (audio.currentTime / TL.duration) * 100 + '%'; raf = requestAnimationFrame(loop); };
+  const play = () => { $('#start').style.display = 'none'; audio.play(); cancelAnimationFrame(raf); loop(); };
+  $('#start').onclick = play;
+  audio.onended = () => { $('#start p').textContent = 'Play again'; $('#start').style.display = 'flex'; audio.currentTime = 0; };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ') { e.preventDefault(); if (audio.paused) play(); else audio.pause(); }
+    else if (e.key === 'ArrowRight') audio.currentTime = Math.min(TL.duration - 0.1, audio.currentTime + 5);
+    else if (e.key === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
+    render(audio.currentTime);
+  });
+  $('#bar').onclick = (e) => { audio.currentTime = (e.clientX / innerWidth) * TL.duration; render(audio.currentTime); };
+  addEventListener('resize', () => { fit(); plan(); render(audio.currentTime); });
+}
+</script>
+</body></html>

@@ -1,0 +1,87 @@
+{
+  "voices": {
+    "narrator": "en_GB-alan-medium",
+    "lucy": "en_US-lessac-medium",
+    "mark": "en_US-ryan-medium"
+  },
+  "people": {
+    "lucy": {"name": "Lucy Parker", "role": "Freelance designer", "initials": "LP"},
+    "mark": {"name": "Mark Ellis", "role": "Northside Studio", "initials": "ME"}
+  },
+  "items": [
+    {"scene": "intro"},
+    {"pause": 0.8},
+    {"who": "narrator", "text": "Lucy is a freelance designer. Today she's closing a new project on a video call. RockSign is listening."},
+    {"pause": 0.9},
+
+    {"scene": "call"},
+    {"pause": 1.6},
+    {"id": "L1", "who": "lucy", "text": "Hi Mark! Thanks for jumping on. Quick heads-up: I use RockSign, so this call is recorded, and you'll get the agreement to sign when we hang up. Is that okay?"},
+    {"pause": 0.5},
+    {"id": "M1", "who": "mark", "text": "Sure, that works for me."},
+    {"pause": 0.4},
+    {"id": "L2", "who": "lucy", "text": "Great. So, what do you need?"},
+    {"pause": 0.5},
+    {"id": "M2", "who": "mark", "text": "We're launching a new product next month. We need our landing page redesigned, plus three social media pieces for the launch.",
+     "detect": {"key": "deliverables", "label": "Deliverables", "value": "Landing page redesign + 3 social media pieces"}},
+    {"pause": 0.5},
+    {"id": "L3", "who": "lucy", "text": "Got it. The landing page plus three social pieces. When do you need them?"},
+    {"pause": 0.4},
+    {"id": "M3", "who": "mark", "text": "Ideally by Friday, October 23rd.", "say": "Ideally by Friday, October twenty-third.",
+     "detect": {"key": "deadline", "label": "Deadline", "value": "Friday, October 23, 2026"}},
+    {"pause": 0.5},
+    {"id": "L4", "who": "lucy", "text": "That works. For that scope, my fee is $1,200.", "say": "That works. For that scope, my fee is twelve hundred dollars.",
+     "detect": {"key": "fee", "label": "Fee", "value": "US$ 1,200"}},
+    {"pause": 0.4},
+    {"id": "M4", "who": "mark", "text": "$1,200 is fine. How do you want to get paid?", "say": "Twelve hundred is fine. How do you want to get paid?"},
+    {"pause": 0.4},
+    {"id": "L5", "who": "lucy", "text": "50% upfront, and the other 50% when I deliver the final files.", "say": "Fifty percent upfront, and the other fifty when I deliver the final files.",
+     "detect": {"key": "payment", "label": "Payment terms", "value": "50% upfront · 50% on delivery"}},
+    {"pause": 0.5},
+    {"id": "M5", "who": "mark", "text": "Deal. What about changes? Our CEO always has opinions."},
+    {"pause": 0.4},
+    {"id": "L6", "who": "lucy", "text": "I include two rounds of revisions. Anything beyond that is $60 an hour.", "say": "I include two rounds of revisions. Anything beyond that is sixty dollars an hour.",
+     "detect": {"key": "revisions", "label": "Revisions", "value": "2 rounds included · extra at US$ 60/h"}},
+    {"pause": 0.5},
+    {"id": "M6", "who": "mark", "text": "Fair enough. Oh, and we'll need the source files too. The Figma file and all the exports."},
+    {"pause": 0.4},
+    {"id": "L7", "who": "lucy", "text": "Of course. You'll get the Figma file and every exported asset.",
+     "detect": {"key": "handoff", "label": "Handoff", "value": "Figma source file + all exported assets"}},
+    {"pause": 0.4},
+    {"id": "M7", "who": "mark", "text": "Perfect. Let's do it."},
+    {"pause": 0.4},
+    {"id": "L8", "who": "lucy", "text": "Awesome. I'll start on Monday, October 5th. Talk soon!", "say": "Awesome. I'll start on Monday, October fifth. Talk soon!",
+     "detect": {"key": "start", "label": "Start date", "value": "Monday, October 5, 2026"}},
+    {"pause": 0.8},
+
+    {"scene": "hangup"},
+    {"pause": 1.8},
+
+    {"scene": "drafting"},
+    {"pause": 0.6},
+    {"who": "narrator", "text": "The moment the call ends, RockSign turns the conversation into a draft agreement, and sends it to everyone who was on the call."},
+    {"pause": 1.4},
+
+    {"scene": "inbox"},
+    {"pause": 0.5},
+    {"who": "narrator", "text": "Mark gets it seconds later. No account, no app to install."},
+    {"pause": 1.8},
+
+    {"scene": "agreement"},
+    {"pause": 0.8},
+    {"who": "narrator", "text": "Every clause links to the exact moment it was agreed. Not sure about the payment terms? Just listen."},
+    {"pause": 1.6},
+    {"replay": "L5"},
+    {"pause": 1.2},
+
+    {"scene": "sign"},
+    {"pause": 0.5},
+    {"who": "narrator", "text": "One tap to sign. Now both sides share the same record of the deal."},
+    {"pause": 4.2},
+
+    {"scene": "outro"},
+    {"pause": 0.6},
+    {"who": "narrator", "text": "RockSign. What's said, gets signed."},
+    {"pause": 2.6}
+  ]
+}
