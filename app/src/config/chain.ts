@@ -9,3 +9,8 @@ export const MEMO_PROGRAM_ID = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr";
 export const USDC_MINT = env.VITE_USDC_MINT ?? "";
 export const explorerTx = (sig: string) => `https://explorer.solana.com/tx/${sig}?cluster=${CLUSTER}`;
 export const explorerAddress = (a: string) => `https://explorer.solana.com/address/${a}?cluster=${CLUSTER}`;
+
+// Freemium: agreements are free to draft, sign and seal. RockSign takes 1% of each payment
+// made through it, split off inside the same transaction.
+export const FEE_BPS = 100;
+export const feeOf = (amount: number) => Math.round(amount * FEE_BPS) / 10000;

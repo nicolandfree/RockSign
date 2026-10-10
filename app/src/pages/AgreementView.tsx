@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { decodeEnvelope, encodeEnvelope, envelopeLink, type Envelope } from "../lib/share.ts";
-import { agreementHash, verifySignature } from "../lib/agreement.ts";
-import { faucet, findPayment, payUpfront, seal, signAgreement, usdcBalance, verifySeal, type Verification } from "../lib/chain.ts";
+import { agreementHash, milestones, verifyDelivery, verifySignature } from "../lib/agreement.ts";
+import QRCode from "qrcode";
+import { faucet, findPayments, payMilestone, seal, signAgreement, signDelivery, solanaPayUrl, usdcArsRate, usdcBalance, verifySeal, type Verification } from "../lib/chain.ts";
 import { fmt } from "../lib/extract.ts";
 import { useClipPlayer, useSigner } from "../lib/hooks.ts";
-import { explorerTx } from "../config/chain.ts";
+import { explorerTx, feeOf, FEE_BPS } from "../config/chain.ts";
 import type { Party } from "../lib/types.ts";
 
 const short = (s: string) => `${s.slice(0, 4)}…${s.slice(-4)}`;
@@ -55,9 +56,7 @@ export default function AgreementView({ data }: { data: string }) {
 
       <aside className="side">
         <Signatures envelope={envelope} hash={hash} />
-        {sigOf("provider") && sigOf("client") && envelope.sealTx && a.payment && a.payment.upfrontPercent > 0 && (
-          <Payment envelope={envelope} />
-        )}
+        {sigOf("provider") && sigOf("client") && envelope.sealTx && a.payment && <Payments envelope={envelope} hash={hash} />}
         {envelope.sealTx && <VerifyCard envelope={envelope} />}
       </aside>
     </div>
@@ -130,45 +129,109 @@ function Signatures({ envelope, hash }: { envelope: Envelope; hash: string }) {
   );
 }
 
-function Payment({ envelope }: { envelope: Envelope }) {
-  const { agreement: a, signatures } = envelope;
+const usd = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+function Payments({ envelope, hash }: { envelope: Envelope; hash: string }) {
+  const { agreement: a, signatures, delivered } = envelope;
   const provider = signatures.find((s) => s.role === "provider")!;
-  const signer = useSigner("client");
-  const amount = (a.payment!.total * a.payment!.upfrontPercent) / 100;
-  const [paidTx, setPaidTx] = useState<string | null | undefined>(undefined);
+  const client = signatures.find((s) => s.role === "client")!;
+  const providerSigner = useSigner("provider");
+  const clientSigner = useSigner("client");
+  const isProvider = providerSigner.pubkey === provider.pubkey;
+  const isClient = clientSigner.pubkey === client.pubkey;
+  const plan = milestones(a);
+  const deliveredOk = !!delivered && !!hash && verifyDelivery(hash, a.title, delivered);
+  const [paid, setPaid] = useState<Record<number, string | null> | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
+  const [ars, setArs] = useState<{ rate: number; venue: string } | null>(null);
+  const [qr, setQr] = useState<{ n: number; img: string } | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const isProvider = signer.pubkey === provider.pubkey;
 
-  useEffect(() => { void findPayment(a, provider.pubkey).then(setPaidTx); }, [a, provider.pubkey]);
-  useEffect(() => { if (!isProvider) void usdcBalance(signer.pubkey).then(setBalance); }, [signer.pubkey, isProvider]);
+  const refresh = () => void findPayments(a, provider.pubkey).then(setPaid);
+  useEffect(refresh, [a, provider.pubkey]);
+  useEffect(() => { if (isClient) void usdcBalance(clientSigner.pubkey).then(setBalance); }, [clientSigner.pubkey, isClient, paid]);
+  useEffect(() => { if (isProvider) void usdcArsRate().then(setArs); }, [isProvider]);
+  // Payments made from another wallet via the QR show up here on their own.
+  useEffect(() => { if (!qr) return; const t = setInterval(refresh, 4000); return () => clearInterval(t); });
 
   const run = async (label: string, fn: () => Promise<void>) => {
     setBusy(label); setError(null);
     try { await fn(); } catch (e) { setError((e as Error).message); } finally { setBusy(null); }
   };
+  const received = plan.filter((m) => paid?.[m.n]).reduce((t, m) => t + m.amount - feeOf(m.amount), 0);
+  const due = (m: (typeof plan)[number]) => m.due === "signing" || deliveredOk;
 
   return (
     <div className="card stack">
-      <h3>Upfront payment</h3>
-      <div style={{ fontFamily: "Oswald", fontSize: 30, color: "var(--ink)" }}>{amount.toLocaleString()} <span style={{ fontSize: 16 }}>USDC</span></div>
-      <div className="small muted">{a.payment!.upfrontPercent}% of {a.payment!.total.toLocaleString()}, as agreed on the call · paid straight to {a.parties[0].name}'s address</div>
-      {paidTx === undefined ? <div className="small muted">Checking payment status…</div>
-        : paidTx ? <div className="pill ok" style={{ alignSelf: "flex-start" }}>✓ Paid · <a href={explorerTx(paidTx)} target="_blank" rel="noreferrer">view tx</a></div>
-        : isProvider ? <div className="pill">Waiting for the client to pay</div>
-        : (
-          <>
-            <div className="small">Your balance: <b>{balance === null ? "…" : `${balance.toLocaleString()} USDC`}</b> <span className="muted">(devnet test USDC)</span></div>
-            {balance !== null && balance < amount && (
-              <button className="btn ghost" disabled={!!busy} onClick={() => run("Minting test USDC…", async () => { await faucet(signer.pubkey); setBalance(await usdcBalance(signer.pubkey)); })}>{busy === "Minting test USDC…" ? busy : "Get 2,000 test USDC"}</button>
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <h3>Getting paid</h3>
+        <span className="small muted">{usd(a.payment!.total)} USDC total</span>
+      </div>
+
+      {plan.map((m) => {
+        const tx = paid?.[m.n];
+        const fee = feeOf(m.amount);
+        return (
+          <div key={m.n} className="milestone">
+            <div className="row" style={{ justifyContent: "space-between" }}>
+              <b style={{ color: "var(--ink)" }}>{m.label}</b>
+              {paid === null ? <span className="small muted">checking…</span>
+                : tx ? <span className="pill ok">✓ Paid · <a href={explorerTx(tx)} target="_blank" rel="noreferrer">tx</a></span>
+                : due(m) ? <span className="pill red">Due now</span> : <span className="pill">Due on delivery</span>}
+            </div>
+            <div className="fee-lines small">
+              <span>Client pays</span><span>{usd(m.amount)} USDC</span>
+              <span>{a.parties[0].name} receives</span><span>{usd(m.amount - fee)} USDC</span>
+              <span className="muted">RockSign fee ({FEE_BPS / 100}%)</span><span className="muted">{usd(fee)} USDC</span>
+            </div>
+            {isClient && !tx && due(m) && paid !== null && (
+              <div className="stack" style={{ gap: 8 }}>
+                <div className="row" style={{ gap: 8 }}>
+                  <button className="btn ok" style={{ flex: 1 }} disabled={!!busy || balance === null || balance < m.amount}
+                    onClick={() => run(`pay${m.n}`, async () => { await payMilestone(a, provider.pubkey, m.n, m.amount, clientSigner); refresh(); })}>
+                    {busy === `pay${m.n}` ? "Paying…" : `Pay ${usd(m.amount)} USDC`}
+                  </button>
+                  <button className="btn ghost" title="Pay from any Solana wallet app" disabled={!!busy}
+                    onClick={() => run("qr", async () => { setQr(qr?.n === m.n ? null : { n: m.n, img: await QRCode.toDataURL(await solanaPayUrl(a, provider.pubkey, m.n, m.amount), { margin: 1, width: 220 }) }); })}>QR</button>
+                </div>
+                {qr?.n === m.n && (
+                  <div className="qr"><img src={qr.img} alt="Solana Pay QR code" /><div className="small muted">Scan with Phantom, Solflare or any Solana Pay wallet. RockSign pays the network fee.</div></div>
+                )}
+              </div>
             )}
-            <button className="btn ok" disabled={!!busy || balance === null || balance < amount} onClick={() => run("Paying…", async () => { setPaidTx(await payUpfront(a, provider.pubkey, amount, signer)); })}>
-              {busy === "Paying…" ? busy : `Pay ${amount.toLocaleString()} USDC`}
-            </button>
-            <div className="small muted">RockSign covers the network fee. You only need the USDC.</div>
-          </>
-        )}
+          </div>
+        );
+      })}
+
+      {isClient && balance !== null && plan.some((m) => !paid?.[m.n] && due(m) && balance < m.amount) && (
+        <div className="row small" style={{ justifyContent: "space-between" }}>
+          <span>Your balance: <b>{usd(balance)} USDC</b> <span className="muted">(devnet test)</span></span>
+          <button className="btn ghost small" disabled={!!busy} onClick={() => run("faucet", async () => { await faucet(clientSigner.pubkey); setBalance(await usdcBalance(clientSigner.pubkey)); })}>{busy === "faucet" ? "Minting…" : "Get 2,000 test USDC"}</button>
+        </div>
+      )}
+
+      {isProvider && plan.some((m) => m.due === "delivery") && !delivered && (
+        <button className="btn dark" disabled={!!busy} onClick={() => run("deliver", async () => {
+          const sig = await signDelivery(a, providerSigner);
+          location.hash = `/a/${encodeEnvelope({ ...envelope, delivered: sig })}`;
+        })}>{busy === "deliver" ? "Signing…" : "Mark work as delivered"}</button>
+      )}
+      {delivered && (
+        <div className={`pill ${deliveredOk ? "ok" : "red"}`} style={{ alignSelf: "flex-start" }}>
+          {deliveredOk ? `✓ Delivered ${new Date(delivered.signedAt).toLocaleDateString()} · signed by ${a.parties[0].name}` : "Delivery notice signature is invalid"}
+        </div>
+      )}
+      {isProvider && delivered && plan.some((m) => m.due === "delivery" && !paid?.[m.n]) && (
+        <div className="small">Send the updated link to {a.parties[1].name} to request the final payment.</div>
+      )}
+
+      {isProvider && received > 0 && (
+        <div className="ars small">
+          You've received <b>{usd(received)} USDC</b>
+          {ars && <> ≈ <b>ARS {Math.round(received * ars.rate).toLocaleString("es-AR")}</b> <span className="muted">at {ars.venue} ({ars.rate.toLocaleString("es-AR")} ARS/USDC, live)</span></>}
+        </div>
+      )}
       {error && <div className="error">{error}</div>}
     </div>
   );

@@ -6,6 +6,7 @@ export interface Envelope {
   agreement: Agreement;
   signatures: Signature[];
   sealTx?: string;
+  delivered?: Signature; // provider's signed "work delivered" notice
 }
 
 export const encodeEnvelope = (e: Envelope) => compressToEncodedURIComponent(JSON.stringify(e));

@@ -1,6 +1,6 @@
 import nacl from "tweetnacl";
 import bs58 from "bs58";
-import type { Agreement, Party, Signature } from "./types.ts";
+import type { Agreement, Milestone, Party, Signature } from "./types.ts";
 
 // Stable JSON: sorted keys, no whitespace. Same agreement => same bytes => same hash.
 export function canonical(value: unknown): string {
@@ -61,4 +61,29 @@ export function parseSealMemo(memo: string): { hash: string; sigs: Signature[] }
       { role: "client", pubkey: ck, signature: cs, signedAt: "" },
     ],
   };
+}
+
+// The provider signs this when the work is handed over; it unlocks the payment due on delivery.
+export function deliveryMessage(hash: string, title: string): string {
+  return ["RockSign delivery v1", `Title: ${title}`, `SHA-256: ${hash}`, "I delivered the work described in this agreement."].join("\n");
+}
+
+export function verifyDelivery(hash: string, title: string, sig: Signature): boolean {
+  try {
+    const msg = new TextEncoder().encode(deliveryMessage(hash, title));
+    return nacl.sign.detached.verify(msg, bs58.decode(sig.signature), bs58.decode(sig.pubkey));
+  } catch {
+    return false;
+  }
+}
+
+// The payment plan agreed on the call, as the two moments money changes hands.
+export function milestones(a: Agreement): Milestone[] {
+  if (!a.payment) return [];
+  const upfront = Math.round(a.payment.total * a.payment.upfrontPercent) / 100;
+  const rest = Math.round((a.payment.total - upfront) * 100) / 100;
+  const out: Milestone[] = [];
+  if (upfront > 0) out.push({ n: 1, label: `Upfront (${a.payment.upfrontPercent}%)`, amount: upfront, due: "signing" });
+  if (rest > 0) out.push({ n: 2, label: upfront > 0 ? `On delivery (${100 - a.payment.upfrontPercent}%)` : "On delivery", amount: rest, due: "delivery" });
+  return out;
 }

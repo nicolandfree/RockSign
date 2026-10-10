@@ -98,7 +98,7 @@ export default function Review() {
               <div>
                 <h3>Upfront payment</h3>
                 <div style={{ fontSize: 22, color: "var(--ink)", fontFamily: "Oswald" }}>{upfront.toLocaleString()} USDC</div>
-                <div className="small muted">{a.payment.upfrontPercent}% of {a.payment.total.toLocaleString()} · requested from the client as soon as both sign</div>
+                <div className="small muted">{a.payment.upfrontPercent}% of {a.payment.total.toLocaleString()} on signing, the rest on delivery · RockSign keeps 1% of each payment, signing is free</div>
               </div>
               <label className="field" style={{ maxWidth: 120, minWidth: 100 }}>Upfront %
                 <input className="text" type="number" min={0} max={100} value={a.payment.upfrontPercent} onChange={(e) => setA({ ...a, payment: { ...a.payment!, upfrontPercent: Math.min(100, Math.max(0, Number(e.target.value))) } })} />

@@ -105,3 +105,14 @@ input.text:focus { outline: 2px solid var(--red2); border-color: transparent; }
   .steps { grid-template-columns: 1fr 1fr; } .doc .parties { grid-template-columns: 1fr; } .side { position: static; }
   .top { padding: 12px 16px; } main { padding: 20px 16px 60px; }
 }
+
+/* Payments */
+.milestone { border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.fee-lines { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; }
+.fee-lines span:nth-child(even) { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 12px; }
+.qr { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.qr img { width: 200px; height: 200px; image-rendering: pixelated; }
+.ars { background: var(--okbg); color: var(--ink2); border-radius: 8px; padding: 10px 12px; }
+.pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.pricing .card b.big { font-family: "Oswald"; font-size: 30px; color: var(--ink); display: block; }
+@media (max-width: 860px) { .pricing { grid-template-columns: 1fr; } }

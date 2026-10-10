@@ -3,18 +3,20 @@ import { TOKEN_PROGRAM_ID, decodeTransferCheckedInstruction } from "@solana/spl-
 import { MEMO_PROGRAM_ID } from "../src/config/chain.ts";
 import { json, sponsor } from "./_sponsor.ts";
 
-// GET -> { feePayer }: the address the client sets as fee payer.
+// GET -> { feePayer, treasury }: the fee payer to set, and the owner of the account that
+// receives RockSign's 1% (on devnet the sponsor's own USDC account).
 export async function GET(): Promise<Response> {
   try {
-    return json({ feePayer: sponsor().payer.publicKey.toBase58() });
+    const key = sponsor().payer.publicKey.toBase58();
+    return json({ feePayer: key, treasury: key });
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
   }
 }
 
 // POST { tx } (base64, signed by the payer, fee payer = sponsor) -> { tx: signature }.
-// The sponsor only adds its fee signature to a USDC transfer (+ memo). It never appears in
-// any instruction, so a relayed transaction cannot move the sponsor's own funds.
+// The sponsor only adds its fee signature to a USDC payment (provider share + optional 1% fee
+// + memo). It never appears in any instruction, so a relayed transaction cannot move its funds.
 export async function POST(request: Request): Promise<Response> {
   const mint = process.env.VITE_USDC_MINT;
   let tx: Transaction;
@@ -26,7 +28,7 @@ export async function POST(request: Request): Promise<Response> {
   try {
     const { connection, payer } = sponsor();
     if (!tx.feePayer?.equals(payer.publicKey)) return json({ error: "Fee payer must be the RockSign sponsor" }, 400);
-    if (tx.instructions.length > 3) return json({ error: "Too many instructions" }, 400);
+    if (tx.instructions.length > 4) return json({ error: "Too many instructions" }, 400);
     let transfers = 0;
     for (const ix of tx.instructions) {
       if (ix.keys.some((k) => k.pubkey.equals(payer.publicKey))) return json({ error: "Sponsor cannot be an instruction account" }, 400);
@@ -36,7 +38,7 @@ export async function POST(request: Request): Promise<Response> {
       if (!mint || !decoded.keys.mint.pubkey.equals(new PublicKey(mint))) return json({ error: "Only USDC transfers can be relayed" }, 400);
       transfers++;
     }
-    if (transfers !== 1) return json({ error: "Exactly one USDC transfer is required" }, 400);
+    if (transfers < 1 || transfers > 2) return json({ error: "Expected a USDC payment and at most one fee transfer" }, 400);
     tx.partialSign(payer);
     if (!tx.verifySignatures()) return json({ error: "Transaction is not fully signed" }, 400);
     const sig = await connection.sendRawTransaction(tx.serialize());

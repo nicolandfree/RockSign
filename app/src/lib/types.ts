@@ -44,3 +44,10 @@ export interface Signature {
   signature: string; // base58 ed25519 signature over agreementMessage()
   signedAt: string;
 }
+
+export interface Milestone {
+  n: 1 | 2;
+  label: string;
+  amount: number; // USDC
+  due: "signing" | "delivery";
+}

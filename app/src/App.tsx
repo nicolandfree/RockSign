@@ -7,6 +7,7 @@ import Process from "./pages/Process.tsx";
 import Review from "./pages/Review.tsx";
 import AgreementView from "./pages/AgreementView.tsx";
 import Verify from "./pages/Verify.tsx";
+import Stats from "./pages/Stats.tsx";
 
 export default function App() {
   const route = useHashRoute();
@@ -18,6 +19,7 @@ export default function App() {
   else if (route.startsWith("/process/")) page = <Process source={route.slice(9)} apiKey={apiKey} onNeedKey={() => setShowKey(true)} />;
   else if (route === "/review") page = <Review />;
   else if (route === "/verify") page = <Verify />;
+  else if (route === "/stats") page = <Stats />;
   else page = <Home apiKey={apiKey} onKey={() => setShowKey(true)} />;
 
   return (
@@ -25,6 +27,7 @@ export default function App() {
       <header className="top">
         <a className="brand" href="#/"><img src="/brand/wordmark.webp" alt="RockSign" /></a>
         <nav>
+          <a className="btn ghost small" href="#/stats">Live stats</a>
           <span className="net">Solana {CLUSTER}</span>
           <button className="btn ghost small" onClick={() => setShowKey(true)}>{apiKey ? "Claude key ✓" : "Claude key"}</button>
           <WalletMultiButton style={{ height: 34, fontSize: 13, borderRadius: 8, background: "#171310", fontFamily: "DM Sans" }} />
