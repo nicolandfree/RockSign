@@ -1,0 +1,67 @@
+{
+ "title": "Tienda online con carrito y pagos con tarjeta para marca de café",
+ "provider": {
+  "name": "Proveedor",
+  "company": null
+ },
+ "client": {
+  "name": "Diego",
+  "company": null
+ },
+ "terms": [
+  {
+   "kind": "deliverables",
+   "label": "Entregables",
+   "value": "El Proveedor desarrollará una tienda online para la marca de café del Cliente, con carrito de compras y pagos con tarjeta.",
+   "firstLine": 4,
+   "lastLine": 5
+  },
+  {
+   "kind": "deadline",
+   "label": "Fecha de entrega",
+   "value": "El Proveedor entregará la tienda online funcionando a más tardar el viernes 30 de octubre.",
+   "firstLine": 6,
+   "lastLine": 8
+  },
+  {
+   "kind": "fee",
+   "label": "Honorarios",
+   "value": "El honorario total por el trabajo es de USD 2.000.",
+   "firstLine": 8,
+   "lastLine": 9
+  },
+  {
+   "kind": "payment",
+   "label": "Forma de pago",
+   "value": "El Cliente pagará el 30% (USD 600) por adelantado y el 70% restante (USD 1.400) cuando el Proveedor entregue la tienda funcionando.",
+   "firstLine": 10,
+   "lastLine": 11
+  },
+  {
+   "kind": "revisions",
+   "label": "Soporte y cambios",
+   "value": "El Proveedor incluye un mes de soporte para corregir errores. Las funciones nuevas se cotizarán por separado.",
+   "firstLine": 12,
+   "lastLine": 14
+  },
+  {
+   "kind": "handoff",
+   "label": "Entrega de código y accesos",
+   "value": "El Proveedor entregará al Cliente el repositorio completo del código y todos los accesos, incluido el acceso al panel de administración.",
+   "firstLine": 15,
+   "lastLine": 16
+  },
+  {
+   "kind": "start",
+   "label": "Fecha de inicio",
+   "value": "El Proveedor comenzará el trabajo el lunes 19 de octubre.",
+   "firstLine": 17,
+   "lastLine": 18
+  }
+ ],
+ "payment": {
+  "totalUsd": 2000,
+  "upfrontPercent": 30
+ },
+ "consentGiven": true
+}

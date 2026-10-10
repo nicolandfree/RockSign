@@ -8,6 +8,14 @@ import { useClipPlayer, useSigner } from "../lib/hooks.ts";
 import { explorerTx, feeOf, FEE_BPS } from "../config/chain.ts";
 import type { Party } from "../lib/types.ts";
 
+// Fixed text of the agreement document, in the language of the call.
+const DOC = {
+  en: { eyebrow: (d: string) => `SERVICE AGREEMENT · DRAFTED FROM A RECORDED CALL ON ${d}`, provider: "Service provider", client: "Client", said: "Said on the call", rec: "Recording", agr: "Agreement",
+    note: "Each party signs this agreement hash with an Ed25519 key. The two signatures and the hash are then written to Solana, which timestamps them and makes any later change to the text detectable." },
+  es: { eyebrow: (d: string) => `ACUERDO DE SERVICIOS · REDACTADO A PARTIR DE UNA LLAMADA GRABADA EL ${d}`, provider: "Proveedor", client: "Cliente", said: "Dicho en la llamada", rec: "Grabación", agr: "Acuerdo",
+    note: "Cada parte firma el hash de este acuerdo con una clave Ed25519. Las dos firmas y el hash se escriben en Solana, que les pone fecha y hace detectable cualquier cambio posterior al texto." },
+};
+
 const short = (s: string) => `${s.slice(0, 4)}…${s.slice(-4)}`;
 
 export default function AgreementView({ data }: { data: string }) {
@@ -19,16 +27,17 @@ export default function AgreementView({ data }: { data: string }) {
   const { agreement: a, signatures } = envelope;
   const party = (role: Party["role"]) => a.parties.find((p) => p.role === role)!;
   const sigOf = (role: Party["role"]) => signatures.find((s) => s.role === role);
+  const t = DOC[a.language ?? "en"];
 
   return (
     <div className="layout">
       <article className="doc">
-        <div className="eyebrow">SERVICE AGREEMENT · DRAFTED FROM A RECORDED CALL ON {a.createdAt}</div>
+        <div className="eyebrow">{t.eyebrow(a.createdAt)}</div>
         <h1>{a.title}</h1>
         <div className="parties">
           {(["provider", "client"] as const).map((r) => (
             <div key={r}>
-              <h3>{r === "provider" ? "Service provider" : "Client"}</h3>
+              <h3>{r === "provider" ? t.provider : t.client}</h3>
               <div style={{ color: "var(--ink)", fontWeight: 600, fontSize: 17 }}>{party(r).name}</div>
               {party(r).company && <div className="small">{party(r).company}</div>}
             </div>
@@ -40,7 +49,7 @@ export default function AgreementView({ data }: { data: string }) {
             <div>
               <span className="label" style={{ font: '600 12px "DM Sans"', textTransform: "uppercase", letterSpacing: ".07em", color: "var(--red)" }}>{t.label}</span>
               <p>{t.value}</p>
-              <div className="quote">Said on the call: "{t.quote}"</div>
+              <div className="quote">{DOC[a.language ?? "en"].said}: "{t.quote}"</div>
             </div>
             <button className={`play${player.playing === `c${i}` ? " on" : ""}`} onClick={() => player.play(`c${i}`, t.start, t.end)} disabled={!player.available} title={player.available ? "Hear it from the call" : "The recording stays with the provider"}>
               {player.playing === `c${i}` ? "■" : "▶"} {fmt(t.start)}
@@ -48,9 +57,9 @@ export default function AgreementView({ data }: { data: string }) {
           </div>
         ))}
         <div className="small muted" style={{ marginTop: 18 }}>
-          Recording SHA-256 <span className="mono">{a.recordingSha256}</span><br />
-          Agreement SHA-256 <span className="mono">{hash}</span><br />
-          Each party signs this agreement hash with an Ed25519 key. The two signatures and the hash are then written to Solana, which timestamps them and makes any later change to the text detectable.
+          {t.rec} SHA-256 <span className="mono">{a.recordingSha256}</span><br />
+          {t.agr} SHA-256 <span className="mono">{hash}</span><br />
+          {t.note}
         </div>
       </article>
 

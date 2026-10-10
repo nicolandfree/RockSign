@@ -1,0 +1,81 @@
+{
+ "version": 1,
+ "title": "Tienda online con carrito y pagos con tarjeta para marca de café",
+ "createdAt": "2026-10-09",
+ "parties": [
+  {
+   "role": "provider",
+   "name": "Sofía Romero"
+  },
+  {
+   "role": "client",
+   "name": "Diego Torres",
+   "company": "Café Altura"
+  }
+ ],
+ "terms": [
+  {
+   "kind": "deliverables",
+   "label": "Entregables",
+   "value": "Sofía desarrollará una tienda online para la marca de café de Café Altura, con carrito de compras y pagos con tarjeta.",
+   "quote": "Queremos una tienda online para nuestra marca de café, con carrito y pagos con tarjeta. Entiendo. Una tienda online con carrito y pagos con tarjeta.",
+   "start": 14.82,
+   "end": 24.82
+  },
+  {
+   "kind": "deadline",
+   "label": "Fecha de entrega",
+   "value": "Sofía entregará la tienda online funcionando a más tardar el viernes 30 de octubre.",
+   "quote": "para cuando la necesitan. Idealmente para el viernes treinta de obturé. Es muy bien, por el alcance de mil horarios de 2.000 dólares.",
+   "start": 24.7,
+   "end": 34.2
+  },
+  {
+   "kind": "fee",
+   "label": "Honorarios",
+   "value": "El honorario total por el trabajo es de USD 2.000.",
+   "quote": "Es muy bien, por el alcance de mil horarios de 2.000 dólares. 2.000 está bien. ¿Cómo crees cobrar?",
+   "start": 30.2,
+   "end": 37.7
+  },
+  {
+   "kind": "payment",
+   "label": "Forma de pago",
+   "value": "Café Altura pagará el 30% (USD 600) por adelantado y el 70% restante (USD 1.400) cuando Sofía entregue la tienda funcionando.",
+   "quote": "Un treinta por ciento por adelantado y el resto cuando entraere la tienda funcionando. Trato hecho. ¿Y si queremos cambios después?",
+   "start": 37.7,
+   "end": 46.2
+  },
+  {
+   "kind": "revisions",
+   "label": "Soporte y cambios",
+   "value": "Sofía incluye un mes de soporte para corregir errores. Las funciones nuevas se cotizarán por separado.",
+   "quote": "Incluyo un mes de soporte para corregir errores. Las funciones nuevas se cotizan aparte. Me parece justo.",
+   "start": 46.2,
+   "end": 53.38
+  },
+  {
+   "kind": "handoff",
+   "label": "Entrega de código y accesos",
+   "value": "Sofía entregará a Café Altura el repositorio completo del código y todos los accesos, incluido el acceso al panel de administración.",
+   "quote": "Y vamos a necesitar el código y el acceso al panel de administración. Por supuesto te entrego el repositorio completo y todos los accesos.",
+   "start": 53.38,
+   "end": 62.14
+  },
+  {
+   "kind": "start",
+   "label": "Fecha de inicio",
+   "value": "Sofía comenzará el trabajo el lunes 19 de octubre.",
+   "quote": "Excelente arrancamos. Buenísimo, empiezo el lunes 19 de octubre.",
+   "start": 62.14,
+   "end": 67.48
+  }
+ ],
+ "payment": {
+  "currency": "USDC",
+  "total": 2000,
+  "upfrontPercent": 30
+ },
+ "recordingSha256": "228ddc54430c29fb4ff7cb788a973c58bd6f836a857a0a99f04550b01765fd57",
+ "audioUrl": "/sample/llamada.mp3"
+}

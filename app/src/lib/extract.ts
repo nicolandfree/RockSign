@@ -71,7 +71,8 @@ Rules:
 - "firstLine"/"lastLine" are the transcript line numbers where that term was said and agreed (the proposal and, if separate, the acceptance). Keep the range tight.
 - "payment" is the total fee in USD and the share due upfront (0 if nothing upfront). null if no fee was agreed.
 - "consentGiven" is true only if someone said the call is being recorded and the other person agreed.
-- Names: use the names people use on the call; company if mentioned, else null. The provider is the person offering the service.`;
+- Names: use the names people use on the call; company if mentioned, else null. The provider is the person offering the service.
+- Language: write "title", "label" and "value" in the language spoken on the call (for a call in Spanish, the clauses are in Spanish). Amounts in the payment field are always numbers in USD.`;
 
 export function transcriptForPrompt(segments: Segment[]): string {
   return segments.map((s, i) => `[${i}] (${fmt(s.start)}) ${s.text}`).join("\n");

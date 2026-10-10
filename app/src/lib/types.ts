@@ -36,6 +36,7 @@ export interface Agreement {
   payment: PaymentPlan | null;
   recordingSha256: string; // hash of the audio the terms were taken from
   audioUrl?: string; // public recording, when there is one (the sample call)
+  language?: "en" | "es"; // language of the call and of the clauses
 }
 
 export interface Signature {

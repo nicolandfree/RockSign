@@ -1,5 +1,6 @@
 import type { AsrEvent } from "../workers/asr.worker.ts";
 import type { Segment } from "./types.ts";
+import type { CallLanguage } from "./transcribe.ts";
 
 export async function sha256Hex(buf: ArrayBuffer): Promise<string> {
   const d = await crypto.subtle.digest("SHA-256", buf);
@@ -20,7 +21,7 @@ export async function decodeTo16k(buf: ArrayBuffer): Promise<Float32Array> {
   }
 }
 
-export function transcribeInWorker(audio: Float32Array, onEvent: (e: AsrEvent) => void): Promise<Segment[]> {
+export function transcribeInWorker(audio: Float32Array, lang: CallLanguage, onEvent: (e: AsrEvent) => void): Promise<Segment[]> {
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL("../workers/asr.worker.ts", import.meta.url), { type: "module" });
     worker.onmessage = ({ data }: MessageEvent<AsrEvent>) => {
@@ -29,6 +30,6 @@ export function transcribeInWorker(audio: Float32Array, onEvent: (e: AsrEvent) =
       if (data.type === "error") { worker.terminate(); reject(new Error(data.message)); }
     };
     const copy = audio.slice(); // AudioBuffer-backed arrays cannot be transferred
-    worker.postMessage({ audio: copy }, [copy.buffer]);
+    worker.postMessage({ audio: copy, lang }, [copy.buffer]);
   });
 }

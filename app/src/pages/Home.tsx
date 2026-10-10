@@ -1,14 +1,16 @@
 import { useRef, useState } from "react";
 import { go } from "../lib/hooks.ts";
 import { setPendingUpload } from "./Process.tsx";
+import type { CallLanguage } from "../lib/transcribe.ts";
 
 export default function Home({ apiKey, onKey }: { apiKey: string; onKey: () => void }) {
   const input = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
+  const [lang, setLang] = useState<CallLanguage>("en");
   const pick = (f?: File) => {
     if (!f) return;
     if (!apiKey) return onKey();
-    setPendingUpload(f);
+    setPendingUpload(f, lang);
     go("/process/upload");
   };
   return (
@@ -19,7 +21,8 @@ export default function Home({ apiKey, onKey }: { apiKey: string; onKey: () => v
           <h1>What's said<br />gets signed.<br /><span style={{ color: "var(--red)" }}>And paid.</span></h1>
           <p className="lead">You close the job on a call. RockSign turns what you both said into an agreement your client signs with no wallet and no account, then collects the deposit and the final payment in USDC. Every clause links to the second it was said, and the signatures are sealed on Solana.</p>
           <div className="row">
-            <button className="btn" onClick={() => go("/process/sample")}>▶ Try it with a sample call</button>
+            <button className="btn" onClick={() => go("/process/sample")}>▶ Try a sample call</button>
+            <button className="btn ghost" onClick={() => go("/process/sample-es")}>▶ Llamada de ejemplo en español</button>
             <button className="btn ghost" onClick={() => go("/verify")}>Verify an agreement</button>
           </div>
         </div>
@@ -56,7 +59,13 @@ export default function Home({ apiKey, onKey }: { apiKey: string; onKey: () => v
         >
           <b style={{ color: "var(--ink)" }}>Have your own call? Drop the recording here</b>
           <div className="small muted" style={{ marginTop: 6 }}>
-            MP3, M4A, WAV, WebM or MP4 · English · transcribed in your browser · {apiKey ? "uses your Claude key" : "needs your Claude API key"}
+            MP3, M4A, WAV, WebM or MP4 · transcribed in your browser · {apiKey ? "uses your Claude key" : "needs your Claude API key"}
+          </div>
+          <div className="row" style={{ justifyContent: "center", marginTop: 10 }} onClick={(e) => e.stopPropagation()}>
+            <span className="small">Call language</span>
+            {(["en", "es"] as const).map((l) => (
+              <button key={l} className={`btn small ${lang === l ? "dark" : "ghost"}`} onClick={() => setLang(l)}>{l === "en" ? "English" : "Español"}</button>
+            ))}
           </div>
           <input ref={input} type="file" accept="audio/*,video/*" hidden onChange={(e) => pick(e.target.files?.[0])} />
         </div>
