@@ -2,7 +2,8 @@
 
 **What's said gets signed. And paid.** RockSign turns the call where a freelancer and a client agree on a job into an agreement both sign. Every clause links to the moment it was said. The signatures are sealed on Solana, and the agreed upfront payment is a one-tap USDC transfer.
 
-- **Product:** [`app/`](app/). This is a working web app on Solana devnet. See [app/README.md](app/README.md) for how it works and how to run it.
+- **Live app:** https://rocksign.vercel.app (Solana devnet)
+- **Product code:** [`app/`](app/). This is a working web app on Solana devnet. See [app/README.md](app/README.md) for how it works and how to run it.
 - **Pitch and the first concept video:** the rest of this repo (below).
 
 ---
