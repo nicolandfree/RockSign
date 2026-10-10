@@ -24,7 +24,11 @@ export async function POST(request: Request): Promise<Response> {
   if (!/^rocksign:pay:[0-9a-f]{32}:[12]$/.test(memo)) return json({ error: "Invalid memo" }, 400);
   try {
     const { connection, payer } = sponsor();
+    // The sponsor signs as fee payer, and that signature would also authorize any instruction
+    // naming it. So the sponsor must never be the payer or appear in an instruction.
+    if (account.equals(payer.publicKey) || to.equals(payer.publicKey)) return json({ error: "Invalid account" }, 400);
     const tx = buildPaymentTx({ payer: account, provider: to, treasury: payer.publicKey, feePayer: payer.publicKey, amount, memo });
+    if (tx.instructions.some((ix) => ix.keys.some((k) => k.isSigner && k.pubkey.equals(payer.publicKey)))) return json({ error: "Invalid account" }, 400);
     tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     tx.partialSign(payer); // gas only; the wallet signs the transfers
     return json({ transaction: tx.serialize({ requireAllSignatures: false }).toString("base64"), message: `Pay ${amount} USDC · 1% RockSign fee included` });

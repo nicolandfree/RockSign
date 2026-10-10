@@ -66,3 +66,6 @@ await new Promise((r) => setTimeout(r, 2000));
 console.log("payments found by memo:", JSON.stringify(await findPayments(agreement, provider.pubkey)));
 const badPay = await solanaPayApi.POST(new Request(`http://x/api/solana-pay?to=${provider.pubkey}&amount=5&memo=hack`, { method: "POST", body: JSON.stringify({ account: client.pubkey }) }));
 console.log("bad memo rejected:", badPay.status === 400);
+const sponsorKey = (await (await relayApi.GET()).json()).feePayer;
+const drain = await solanaPayApi.POST(new Request(`http://x/api/solana-pay?to=${client.pubkey}&amount=5&memo=rocksign:pay:${"0".repeat(32)}:1`, { method: "POST", body: JSON.stringify({ account: sponsorKey }) }));
+console.log("sponsor as payer rejected (treasury drain):", drain.status === 400, await drain.text());
