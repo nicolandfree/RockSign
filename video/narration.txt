@@ -1,0 +1,12 @@
+intro|Freelancers close jobs on calls. Then the client remembers the deal differently, or pays late, from another country. RockSign fixes that. What's said gets signed, and paid.
+process|This is a real recording of a call. Whisper transcribes it right here in the browser, so the audio never leaves the device. Then Claude finds every term both sides agreed to.
+review|Seven terms, each one linked to the second it was said. Here is the payment clause, in Lucy's own words.
+sign1|Lucy checks the draft and signs. Her client gets a link. No account, no wallet, no crypto needed.
+client|Mark reads the agreement and can replay any clause from the call. He signs, and RockSign seals both signatures and the agreement hash on Solana.
+explorer|That's the seal on chain: the hash and both signatures, in one memo transaction. Change one word of the agreement, and it no longer matches.
+pay|Now the deal turns into money. The deposit agreed on the call is due. Mark pays six hundred U S D C in one tap. RockSign covers the network fee and keeps one percent, inside the same transaction. Signing is free.
+deliver|When Lucy delivers, she signs a delivery notice, and the balance becomes due. Mark can pay in the app, or scan a Solana Pay code from any wallet.
+pesos|Lucy sees what she received in Argentine pesos, at the best live rate.
+verify|And anyone can check the document against the chain, without trusting RockSign.
+extras|It works in Spanish, it records Google Meet or Zoom calls straight from the browser, and every number on the stats page comes from the chain.
+outro|RockSign. What's said gets signed. And paid. Live now on Solana devnet, at rock sign dot vercel dot app.

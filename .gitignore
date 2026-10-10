@@ -6,3 +6,6 @@ app/dist/
 .vercel
 .gstack/
 submission/
+video/build/
+video/narration/
+dist/RockSign-Live-Demo.mp4

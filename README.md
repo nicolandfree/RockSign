@@ -34,7 +34,7 @@ https://claude.ai/artifact/RKDxnGDTiG1BNzmXSL8PtC
 
 ## What the demo shows
 
-This video was made before the product existed (see `app/` for the working product). It is a scripted simulation, labelled
+This first concept video (Oct 4) predates the working product; the live-product demo is a separate recording. It is a scripted simulation, labelled
 "Concept prototype" on the first and last screens. Keep that label when you show
 it to investors.
 

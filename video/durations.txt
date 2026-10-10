@@ -1,0 +1,12 @@
+intro 13.756735
+process 12.395737
+review 8.399274
+sign1 8.657324
+client 10.628390
+explorer 10.465850
+pay 16.812789
+deliver 10.431020
+pesos 5.737959
+verify 5.505760
+extras 9.511202
+outro 9.275283
