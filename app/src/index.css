@@ -116,3 +116,17 @@ input.text:focus { outline: 2px solid var(--red2); border-color: transparent; }
 .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .pricing .card b.big { font-family: "Oswald"; font-size: 30px; color: var(--ink); display: block; }
 @media (max-width: 860px) { .pricing { grid-template-columns: 1fr; } }
+
+/* Print: the agreement document only, with its on-chain seal */
+.print-only { display: none; }
+.seal-block { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line); gap: 14px; align-items: center; }
+.seal-block img { width: 110px; height: 110px; }
+@media print {
+  @page { margin: 14mm; }
+  body, main { background: #fff; padding: 0; }
+  .top, .side, .foot, .play { display: none !important; }
+  .layout { display: block; }
+  .doc { box-shadow: none; border: 0; padding: 0; }
+  .print-only { display: flex; }
+  .clause { break-inside: avoid; }
+}

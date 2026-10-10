@@ -44,7 +44,7 @@ export default function Review() {
           <h3>Review the draft</h3>
           <h1 style={{ fontSize: 34 }}>{a.title}</h1>
         </div>
-        <span className="pill ok">✓ Recording consent captured on the call</span>
+        {draft.segments.some((x) => /record|grab/i.test(x.text)) ? <span className="pill ok">✓ Recording notice found in the call</span> : <span className="pill red">No recording notice found in the call</span>}
       </div>
       {draft.note && <div className="card small" style={{ background: "var(--cream)" }}>{draft.note}</div>}
 

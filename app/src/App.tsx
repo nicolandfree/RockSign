@@ -8,6 +8,7 @@ import Review from "./pages/Review.tsx";
 import AgreementView from "./pages/AgreementView.tsx";
 import Verify from "./pages/Verify.tsx";
 import Stats from "./pages/Stats.tsx";
+import Record from "./pages/Record.tsx";
 
 export default function App() {
   const route = useHashRoute();
@@ -20,6 +21,7 @@ export default function App() {
   else if (route === "/review") page = <Review />;
   else if (route === "/verify") page = <Verify />;
   else if (route === "/stats") page = <Stats />;
+  else if (route === "/record") page = <Record apiKey={apiKey} onNeedKey={() => setShowKey(true)} />;
   else page = <Home apiKey={apiKey} onKey={() => setShowKey(true)} />;
 
   return (

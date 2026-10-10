@@ -23,6 +23,7 @@ export default function Home({ apiKey, onKey }: { apiKey: string; onKey: () => v
           <div className="row">
             <button className="btn" onClick={() => go("/process/sample")}>▶ Try a sample call</button>
             <button className="btn ghost" onClick={() => go("/process/sample-es")}>▶ Llamada de ejemplo en español</button>
+            <button className="btn dark" onClick={() => go("/record")}>● Record a call</button>
             <button className="btn ghost" onClick={() => go("/verify")}>Verify an agreement</button>
           </div>
         </div>

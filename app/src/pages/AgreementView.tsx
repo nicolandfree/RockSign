@@ -23,6 +23,8 @@ export default function AgreementView({ data }: { data: string }) {
   const [hash, setHash] = useState("");
   useEffect(() => { if (envelope) void agreementHash(envelope.agreement).then(setHash); }, [envelope]);
   const player = useClipPlayer(envelope?.agreement.audioUrl);
+  const [sealQr, setSealQr] = useState("");
+  useEffect(() => { if (envelope?.sealTx) void QRCode.toDataURL(explorerTx(envelope.sealTx), { margin: 1, width: 160 }).then(setSealQr); }, [envelope?.sealTx]);
   if (!envelope) return <div className="error">This agreement link is damaged. Ask the sender for a new one.</div>;
   const { agreement: a, signatures } = envelope;
   const party = (role: Party["role"]) => a.parties.find((p) => p.role === role)!;
@@ -61,6 +63,16 @@ export default function AgreementView({ data }: { data: string }) {
           {t.agr} SHA-256 <span className="mono">{hash}</span><br />
           {t.note}
         </div>
+        {envelope.sealTx && (
+          <div className="print-only seal-block">
+            {sealQr && <img src={sealQr} alt="" />}
+            <div className="small">
+              <b>{a.language === "es" ? "Sellado en Solana" : "Sealed on Solana"}</b> · {signatures.map((s) => `${a.parties.find((p) => p.role === s.role)!.name}: ${s.pubkey}`).join(" · ")}<br />
+              Tx <span className="mono">{envelope.sealTx}</span><br />
+              {a.language === "es" ? "Verificá este documento en" : "Verify this document at"} {location.origin}/#/verify
+            </div>
+          </div>
+        )}
       </article>
 
       <aside className="side">
@@ -119,7 +131,10 @@ function Signatures({ envelope, hash }: { envelope: Envelope; hash: string }) {
       <h3>Signatures</h3>
       <div>{row("provider")}{row("client")}</div>
       {envelope.sealTx ? (
-        <div className="pill ok" style={{ alignSelf: "flex-start" }}>✓ Sealed on Solana · <a href={explorerTx(envelope.sealTx)} target="_blank" rel="noreferrer">view tx</a></div>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <div className="pill ok">✓ Sealed on Solana · <a href={explorerTx(envelope.sealTx)} target="_blank" rel="noreferrer">view tx</a></div>
+          <button className="btn ghost small" onClick={() => window.print()}>Download PDF</button>
+        </div>
       ) : !client ? (
         <>
           <div className="small">Send this link to {clientName}. They can read it, hear each clause from the call, and sign. No account or wallet needed.</div>
