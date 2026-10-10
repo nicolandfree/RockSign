@@ -2,6 +2,7 @@
   // Vercel compiles each function on its own: rewrite "./x.ts" imports to "./x.js" in the output.
   "compilerOptions": {
     "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
