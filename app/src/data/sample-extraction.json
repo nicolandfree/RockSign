@@ -1,0 +1,67 @@
+{
+ "title": "Landing page redesign + three launch social media pieces",
+ "provider": {
+  "name": "Provider",
+  "company": null
+ },
+ "client": {
+  "name": "Mark",
+  "company": null
+ },
+ "terms": [
+  {
+   "kind": "deliverables",
+   "label": "Scope of work",
+   "value": "Provider will redesign Client's landing page and create three social media pieces for Client's upcoming product launch.",
+   "firstLine": 4,
+   "lastLine": 7
+  },
+  {
+   "kind": "deadline",
+   "label": "Delivery date",
+   "value": "Provider will deliver the redesigned landing page and the three social media pieces by Friday, October 23, 2026.",
+   "firstLine": 7,
+   "lastLine": 9
+  },
+  {
+   "kind": "fee",
+   "label": "Project fee",
+   "value": "Client will pay Provider a fixed fee of $1,200 USD for the landing page redesign and the three social media pieces.",
+   "firstLine": 9,
+   "lastLine": 10
+  },
+  {
+   "kind": "payment",
+   "label": "Payment schedule",
+   "value": "Client will pay 50% of the fee ($600 USD) upfront. Client will pay the remaining 50% ($600 USD) when Provider delivers the final files.",
+   "firstLine": 10,
+   "lastLine": 11
+  },
+  {
+   "kind": "revisions",
+   "label": "Revisions",
+   "value": "The fee includes two rounds of revisions. Provider will bill any revisions after those two rounds at $60 USD per hour.",
+   "firstLine": 12,
+   "lastLine": 15
+  },
+  {
+   "kind": "handoff",
+   "label": "Source files",
+   "value": "Provider will deliver the Figma source file and every exported asset to Client.",
+   "firstLine": 16,
+   "lastLine": 19
+  },
+  {
+   "kind": "start",
+   "label": "Start date",
+   "value": "Provider will start work on Monday, October 5, 2026.",
+   "firstLine": 22,
+   "lastLine": 23
+  }
+ ],
+ "payment": {
+  "totalUsd": 1200,
+  "upfrontPercent": 50
+ },
+ "consentGiven": true
+}

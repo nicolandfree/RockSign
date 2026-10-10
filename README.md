@@ -1,4 +1,13 @@
-# RockSign — pitch deck + product demo
+# RockSign
+
+**What's said gets signed. And paid.** RockSign turns the call where a freelancer and a client agree on a job into an agreement both sign. Every clause links to the moment it was said. The signatures are sealed on Solana, and the agreed upfront payment is a one-tap USDC transfer.
+
+- **Product:** [`app/`](app/). This is a working web app on Solana devnet. See [app/README.md](app/README.md) for how it works and how to run it.
+- **Pitch and the first concept video:** the rest of this repo (below).
+
+---
+
+## Pitch deck + concept demo
 
 Everything is in English. The finished files are in `dist/`:
 
@@ -24,7 +33,7 @@ https://claude.ai/artifact/RKDxnGDTiG1BNzmXSL8PtC
 
 ## What the demo shows
 
-The product does not exist yet. The demo is a scripted simulation, labelled
+This video was made before the product existed (see `app/` for the working product). It is a scripted simulation, labelled
 "Concept prototype" on the first and last screens. Keep that label when you show
 it to investors.
 

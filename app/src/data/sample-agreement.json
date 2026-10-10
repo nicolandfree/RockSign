@@ -1,0 +1,81 @@
+{
+ "version": 1,
+ "title": "Landing page redesign + three launch social media pieces",
+ "createdAt": "2026-10-02",
+ "parties": [
+  {
+   "role": "provider",
+   "name": "Lucy Parker"
+  },
+  {
+   "role": "client",
+   "name": "Mark Ellis",
+   "company": "Northside Studio"
+  }
+ ],
+ "terms": [
+  {
+   "kind": "deliverables",
+   "label": "Scope of work",
+   "value": "Lucy will redesign Northside Studio's landing page and create three social media pieces for Northside Studio's upcoming product launch.",
+   "quote": "We're launching a new product next month. We need our landing page redesigned, plus three social media pieces for the launch. Got it. The landing page plus three social pieces. When do you need them?",
+   "start": 16.66,
+   "end": 29.04
+  },
+  {
+   "kind": "deadline",
+   "label": "Delivery date",
+   "value": "Lucy will deliver the redesigned landing page and the three social media pieces by Friday, October 23, 2026.",
+   "quote": "The landing page plus three social pieces. When do you need them? Ideally by Friday, October 23rd. That works. For that scope, my fee is $1,200.",
+   "start": 24.48,
+   "end": 36.32
+  },
+  {
+   "kind": "fee",
+   "label": "Project fee",
+   "value": "Northside Studio will pay Lucy a fixed fee of $1,200 USD for the landing page redesign and the three social media pieces.",
+   "quote": "That works. For that scope, my fee is $1,200. $1,200 is fine. How do you want to get paid?",
+   "start": 32,
+   "end": 39.28
+  },
+  {
+   "kind": "payment",
+   "label": "Payment schedule",
+   "value": "Northside Studio will pay 50% of the fee ($600 USD) upfront. Northside Studio will pay the remaining 50% ($600 USD) when Lucy delivers the final files.",
+   "quote": "$1,200 is fine. How do you want to get paid? 50% upfront, and the other 50 when I deliver the final files.",
+   "start": 36.32,
+   "end": 43.92
+  },
+  {
+   "kind": "revisions",
+   "label": "Revisions",
+   "value": "The fee includes two rounds of revisions. Lucy will bill any revisions after those two rounds at $60 USD per hour.",
+   "quote": "Dio, what about changes? RCO always has opinions. I include two rounds of revisions. Anything beyond that is $60 an hour. Fair enough.",
+   "start": 43.92,
+   "end": 54.66
+  },
+  {
+   "kind": "handoff",
+   "label": "Source files",
+   "value": "Lucy will deliver the Figma source file and every exported asset to Northside Studio.",
+   "quote": "Oh, and we'll need the source files too. The Figma file and all the exports. Of course. You'll get the Figma file and every exported asset.",
+   "start": 54.66,
+   "end": 63.82
+  },
+  {
+   "kind": "start",
+   "label": "Start date",
+   "value": "Lucy will start work on Monday, October 5, 2026.",
+   "quote": "I'll start on Monday, October 5th. Talk soon.",
+   "start": 67.06,
+   "end": 70.36
+  }
+ ],
+ "payment": {
+  "currency": "USDC",
+  "total": 1200,
+  "upfrontPercent": 50
+ },
+ "recordingSha256": "8a95cc2cf84e3ed6a4b26850d5f5fd095d10ee616eec42c21dc863bd3133125c",
+ "audioUrl": "/sample/call.mp3"
+}
