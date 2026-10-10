@@ -104,6 +104,10 @@ All work was done during the hackathon window (Sep 14 – Oct 12, 2026):
 
 The project uses open-source libraries (Solana web3.js, SPL Token, Solana Pay, wallet-adapter, transformers.js, React, Vite) and the Claude API.
 
+## License
+
+[MIT](LICENSE). The RockSign name and logo are not covered by the license.
+
 ## Limits of this build
 
 - Devnet only. The test USDC is a RockSign mint, not Circle USDC.

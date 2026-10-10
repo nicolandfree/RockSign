@@ -50,5 +50,6 @@
     "rpc-websockets": {
       "uuid": "^9.0.1"
     }
-  }
+  },
+  "license": "MIT"
 }
