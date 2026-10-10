@@ -1,100 +1,112 @@
 # RockSign
 
-**What's said gets signed. And paid.** RockSign turns the call where a freelancer and a client agree on a job into an agreement both sign. Every clause links to the moment it was said. The signatures are sealed on Solana, and the agreed upfront payment is a one-tap USDC transfer.
+**What's said gets signed. And paid.**
 
-- **Live app:** https://rocksign.vercel.app (Solana devnet)
-- **Product code:** [`app/`](app/). This is a working web app on Solana devnet. See [app/README.md](app/README.md) for how it works and how to run it.
-- **Pitch and the first concept video:** the rest of this repo (below).
+RockSign is for freelancers who are paid in dollars by clients abroad. You close the job on a call. RockSign turns what you both agreed into an agreement your client signs with no wallet and no account, seals it on Solana, and collects the payments agreed on the call in USDC.
 
----
+[![CI](https://github.com/nicolandfree/RockSign/actions/workflows/ci.yml/badge.svg)](https://github.com/nicolandfree/RockSign/actions/workflows/ci.yml)
 
-## Pitch deck + concept demo
+| | |
+|---|---|
+| **Live app** | https://rocksign.vercel.app (Solana devnet) |
+| **Demo video** | _link added at submission_ |
+| **Pitch deck** | [`dist/RockSign-Pitch.pdf`](dist/RockSign-Pitch.pdf) |
+| **Built for** | Colosseum Crypto World's Fair hackathon, Sep 14 – Oct 12, 2026 |
 
-Everything is in English. The finished files are in `dist/`:
+![An agreement drafted from a call, signed by both sides, sealed on Solana, with its payment plan](docs/img/agreement.jpg)
 
-| File | What it is | How to share |
-|---|---|---|
-| `dist/RockSign-Pitch.pdf` | 12-slide deck, 16:9 | Email it or upload it anywhere |
-| `dist/RockSign-Pitch.html` | The same deck as one offline file (fonts and logos embedded) | Open in any browser. ← → or click to navigate, `N` = speaker notes, `F` = fullscreen |
-| `dist/RockSign-Demo.mp4` | 2:12 product demo video, 1080p, with voices | YouTube/Loom/Drive, or play it from the deck |
-| `dist/RockSign-Demo.html` | The same demo, playable in a browser (audio embedded) | Open it, press Play. Space = pause, ← → = seek |
+## What it does
 
-Online, editable version of the deck (exports to PDF/PPTX from its menu):
-https://claude.ai/artifact/RKDxnGDTiG1BNzmXSL8PtC
+1. **Record the call, or upload it.** RockSign records the microphone and the meeting tab (Google Meet, Zoom, Teams in the browser). English and Spanish.
+2. **Transcribe in the browser.** Whisper runs on the device. The audio is never uploaded.
+3. **Extract the terms with receipts.** Claude drafts each clause: scope, deadline, fee, payment plan, revisions, handoff, start date. Every clause links to the second it was said, and a ▶ button replays it.
+4. **Both sides sign.** Each party signs the SHA-256 of the agreement. The client needs no wallet and no SOL; a key in the browser or any Solana wallet works.
+5. **Sealed on Solana.** The hash and both signatures go into one memo transaction. RockSign pays the fee.
+6. **Get paid as agreed.** The deposit is due on signing. The balance is due once the freelancer signs a delivery notice. The client pays USDC in one tap, or scans a Solana Pay QR from any wallet. RockSign pays the gas.
+7. **See it in pesos.** The freelancer sees what they received in ARS at the best live rate.
+8. **Verify without trusting us.** Anyone holding the agreement can check it against the chain. A signed agreement downloads as a PDF with a QR to its seal.
 
-## Fill in before presenting
+| Review the draft | Live numbers, read from the chain |
+|---|---|
+| ![Review screen with transcript and extracted terms](docs/img/review.jpg) | ![Stats page](docs/img/stats.jpg) |
 
-- Slide 7 (Market): TAM / SAM / SOM numbers and their source.
-- Slide 8 (Business model): free-tier limit, Pro and Studio prices.
-- Slide 10 (Roadmap): quarter for each phase.
-- Slide 11 (Team): empty on purpose.
-- Slide 12 (Ask): amount, goal, contact.
-- Slide 9: check each competitor's current features.
-- Slides 4 and 6: have a lawyer check the recording-consent and e-signature claims.
+## Try it in two minutes
 
-## What the demo shows
+1. Open https://rocksign.vercel.app and click **Try a sample call**. There is also a sample in Spanish.
+2. Wait for the in-browser transcription. The first run downloads the speech model, about 80 MB.
+3. Click **Sign as provider**. On the agreement page, click **Sign as Mark Ellis**: this browser plays both sides.
+4. Click **Get 2,000 test USDC**, then **Pay 600 USDC**. Then **Mark work as delivered** and pay the balance.
+5. Click **Verify on Solana**, and open the **view tx** links in Solana Explorer.
 
-This first concept video (Oct 4) predates the working product; the live-product demo is a separate recording. It is a scripted simulation, labelled
-"Concept prototype" on the first and last screens. Keep that label when you show
-it to investors.
+The sample calls use terms that Claude extracted ahead of time with the same prompt, because the hosted app keeps no API key. To extract terms live from your own recording, add your Claude API key from the header. The key stays in your browser.
 
-1. **Intro** (0:00): logo and narrator.
-2. **Call** (0:10): freelance designer Lucy Parker and client Mark Ellis (Northside
-   Studio) agree on a job. RockSign announces that it's recording. Its side panel
-   picks up seven terms as they're said, each with its minute in the call.
-3. **Hang up** (1:21): RockSign drafts the agreement.
-4. **Inbox** (1:34): Mark receives the email. No account needed.
-5. **Agreement** (1:41): every clause has a ▶ timestamp. A click on "Payment"
-   replays Lucy's own words from the call.
-6. **Sign** (1:56): Mark draws his signature. Both signatures complete and the
-   signed PDF is ready.
-7. **Outro** (2:06): "What's said gets signed."
+## Business model
 
-All names, amounts and dates are fictional. The voices are synthetic (Piper TTS).
+Freemium. Drafting, signing and sealing agreements is free. **RockSign takes 1% of each payment made through it.** The fee is split off inside the same Solana transaction: 99% goes to the freelancer and 1% to the RockSign treasury. Network fees are on RockSign.
 
-### Call script
+## Check it on chain
 
-| Who | Line | Detected term |
-|---|---|---|
-| Lucy | Hi Mark! Thanks for jumping on. Quick heads-up: I use RockSign, so this call is recorded, and you'll get the agreement to sign when we hang up. Is that okay? | |
-| Mark | Sure, that works for me. | |
-| Lucy | Great. So, what do you need? | |
-| Mark | We're launching a new product next month. We need our landing page redesigned, plus three social media pieces for the launch. | Deliverables |
-| Lucy | Got it. The landing page plus three social pieces. When do you need them? | |
-| Mark | Ideally by Friday, October 23rd. | Deadline |
-| Lucy | That works. For that scope, my fee is $1,200. | Fee |
-| Mark | $1,200 is fine. How do you want to get paid? | |
-| Lucy | 50% upfront, and the other 50% when I deliver the final files. | Payment terms |
-| Mark | Deal. What about changes? Our CEO always has opinions. | |
-| Lucy | I include two rounds of revisions. Anything beyond that is $60 an hour. | Revisions |
-| Mark | Fair enough. Oh, and we'll need the source files too. The Figma file and all the exports. | |
-| Lucy | Of course. You'll get the Figma file and every exported asset. | Handoff |
-| Mark | Perfect. Let's do it. | |
-| Lucy | Awesome. I'll start on Monday, October 5th. Talk soon! | Start date |
+- **Seals:** memo transactions paid by the sponsor [`6yiEK73q…SuLM`](https://explorer.solana.com/address/6yiEK73qHUsMP7MhSZBq9uHVdsNWRAHsWpHWt3ZsSuLM?cluster=devnet). Format: `rocksign:v1:<agreement sha256>:<provider>:<signature>:<client>:<signature>`.
+- **Payments:** USDC transfers to the freelancer with the memo `rocksign:pay:<hash prefix>:<milestone>`, plus the 1% fee transfer to the treasury in the same transaction.
+- **Stats:** [/stats](https://rocksign.vercel.app/#/stats) counts these from the chain. On devnet they are test activity, not traction.
 
-## Changing and rebuilding
+## How it is built
 
-All text lives in these source files:
-
-- Deck slides: `pitch/project/slides/*.html` (the same files as the online deck)
-- Call and narration: `demo/script.json`
-- Demo screens: `demo/demo.html`
-
-```bash
-npm install                       # once: Playwright
-node pitch/build.mjs              # → dist/RockSign-Pitch.html + .pdf
-
-python3 demo/build_audio.py       # voices + timeline (delete demo/build/lines/ after editing script.json)
-node demo/build.mjs               # → dist/RockSign-Demo.html
-node demo/build.mjs --stills 15,90  # check frames at those seconds → dist/stills/
-node demo/build.mjs --render      # → dist/RockSign-Demo.mp4 (about 5–10 min)
+```mermaid
+flowchart LR
+  A[Call audio] -->|Whisper, in browser| B[Timestamped transcript]
+  B -->|Claude Opus 5.5, structured output| C[Clauses linked to transcript lines]
+  C --> D[Agreement JSON]
+  D -->|SHA-256| E[Provider signs]
+  E -->|link| F[Client signs]
+  F -->|/api/seal: verify both, memo| G[(Solana)]
+  F -->|USDC 99% + 1% fee, /api/relay or Solana Pay| G
+  G -->|getTransaction| H[Anyone verifies]
 ```
 
-The demo's picture is computed from the soundtrack's clock, so after you edit the
-script, the timings, captions and clause timestamps all update on their own. If
-the timestamps change, also update the ▶ times on slide 5
-(`pitch/project/slides/borrador.html`).
+- **Frontend:** React and Vite, static, on Vercel. The agreement travels in the link, and no server stores it.
+- **Speech:** Whisper through transformers.js in a Web Worker. Audio is cut at pauses so every line keeps exact timestamps.
+- **Extraction:** Claude Opus 5.5 with a JSON schema. Claude returns transcript line numbers, which become exact times.
+- **Solana:** the Memo program, SPL Token `transferChecked`, Solana Pay transaction requests and Wallet Standard. Gas is sponsored by a fee payer that refuses to sign anything that could move its own funds.
+- **Serverless API:** `/api/seal`, `/api/relay`, `/api/solana-pay` and `/api/faucet`. Each one checks the request before the sponsor signs anything, and each has a per-IP rate limit.
 
-**Using real voices instead of TTS:** record the call with two people reading the
-script, cut one WAV file per line (22.05 kHz, mono, 16-bit), and replace the files
-in `demo/build/lines/` with the same names. Then run `build_audio.py` again.
+Details, setup and file layout: [app/README.md](app/README.md).
+
+## Repository
+
+| Path | What it is |
+|---|---|
+| [`app/`](app/) | The product: web app, serverless API, tests, scripts |
+| [`app/tests/`](app/tests/) | Unit tests for hashing, signatures, the memo format, milestones, audio chunking and extraction mapping, plus the API security checks. Run with `npm test`. |
+| [`app/scripts/e2e-chain.ts`](app/scripts/e2e-chain.ts) | End-to-end run against devnet: seal, tampered seal, both payments, Solana Pay, verification |
+| [`video/`](video/) | Records the live app and builds the demo video (Playwright, Piper, ffmpeg) |
+| [`pitch/`](pitch/) | Deck sources. `npm run deck` builds `dist/RockSign-Pitch.*` |
+| [`demo/`](demo/) | The first concept video (Oct 4). It is a scripted simulation made before the app existed. |
+| [`assets/`](assets/) | Logo, wordmark, fonts |
+
+## Development
+
+```bash
+cd app
+npm ci
+npm test                                               # unit + API security tests, offline
+node scripts/setup-devnet.ts ~/.config/solana/id.json  # once: sponsor key, test USDC mint, treasury, .env.local
+npm run dev                                            # http://localhost:5173
+npm run e2e:devnet                                     # full on-chain flow against devnet
+```
+
+## Hackathon disclosure
+
+All work was done during the hackathon window (Sep 14 – Oct 12, 2026):
+
+- **Oct 4:** pitch deck and a scripted concept video ([`demo/`](demo/), [`dist/RockSign-Demo.mp4`](dist/RockSign-Demo.mp4)), made before the product existed.
+- **Oct 10 onward:** the working app in [`app/`](app/), built with AI coding assistance (Claude Code), as the commit history shows.
+
+The project uses open-source libraries (Solana web3.js, SPL Token, Solana Pay, wallet-adapter, transformers.js, React, Vite) and the Claude API.
+
+## Limits of this build
+
+- Devnet only. The test USDC is a RockSign mint, not Circle USDC.
+- The key generated in the browser lives in `localStorage`. Production would use an embedded wallet with recovery.
+- On devnet the treasury is the sponsor's own USDC account. Production would use a separate treasury key.
+- A wallet signature is an electronic signature. The on-chain record makes it tamper-evident and timestamped. Whether it is enough legally depends on the jurisdiction.

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { go } from "../lib/hooks.ts";
-import { setPendingUpload } from "./Process.tsx";
+import { setPendingUpload } from "../lib/upload.ts";
 import type { CallLanguage } from "../lib/transcribe.ts";
 
 export default function Home({ apiKey, onKey }: { apiKey: string; onKey: () => void }) {

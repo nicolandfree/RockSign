@@ -13,4 +13,5 @@ export const explorerAddress = (a: string) => `https://explorer.solana.com/addre
 // Freemium: agreements are free to draft, sign and seal. RockSign takes 1% of each payment
 // made through it, split off inside the same transaction.
 export const FEE_BPS = 100;
-export const feeOf = (amount: number) => Math.round(amount * FEE_BPS) / 10000;
+// Exact 1%, rounded to USDC's smallest unit (6 decimals).
+export const feeOf = (amount: number) => Math.round((amount * 1e6 * FEE_BPS) / 10000) / 1e6;

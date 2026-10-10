@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { go } from "../lib/hooks.ts";
-import { setPendingUpload } from "./Process.tsx";
+import { setPendingUpload } from "../lib/upload.ts";
 import type { CallLanguage } from "../lib/transcribe.ts";
 
 // Records the call in the browser: your microphone, plus (optionally) the audio of the tab

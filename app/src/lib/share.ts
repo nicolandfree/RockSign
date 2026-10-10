@@ -1,4 +1,6 @@
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
+import LZString from "lz-string"; // CommonJS: default import works in Vite and in Node
+
+const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } = LZString;
 import type { Agreement, Signature } from "./types.ts";
 
 // The whole agreement travels in the link (#/a/<data>): no server stores it.

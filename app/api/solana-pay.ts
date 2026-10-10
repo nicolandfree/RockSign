@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { buildPaymentTx } from "../src/lib/chain.ts";
 import { json, sponsor } from "./_sponsor.ts";
+import { limited } from "./_limit.ts";
 
 // Solana Pay transaction request (https://docs.solanapay.com/spec#transaction-request).
 // A wallet scans solana:<this URL>?to=&amount=&memo=, GETs the label, POSTs its account,
@@ -10,6 +11,8 @@ export async function GET(request: Request): Promise<Response> {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  const tooMany = limited(request, "solana-pay", 60);
+  if (tooMany) return tooMany;
   const q = new URL(request.url).searchParams;
   const amount = Number(q.get("amount"));
   const memo = q.get("memo") ?? "";

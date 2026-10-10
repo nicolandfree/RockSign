@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test --test-reporter=spec \"tests/*.test.ts\"",
+    "typecheck": "tsc -b",
+    "e2e:devnet": "node --env-file=.env.local scripts/e2e-chain.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",

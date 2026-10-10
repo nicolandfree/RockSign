@@ -50,10 +50,11 @@ export function sealMemo(hash: string, sigs: Signature[]): string {
 }
 
 export function parseSealMemo(memo: string): { hash: string; sigs: Signature[] } | null {
-  const i = memo.indexOf(MEMO_PREFIX);
-  if (i < 0) return null;
-  const [, , hash, pk, ps, ck, cs] = memo.slice(i).split(":");
-  if (!hash || !pk || !ps || !ck || !cs) return null;
+  // Strict match, so log decorations around the memo (quotes, prefixes) never leak into a field.
+  const b58 = "[1-9A-HJ-NP-Za-km-z]+";
+  const m = memo.match(new RegExp(`${MEMO_PREFIX}:([0-9a-f]{64}):(${b58}):(${b58}):(${b58}):(${b58})`));
+  if (!m) return null;
+  const [, hash, pk, ps, ck, cs] = m;
   return {
     hash,
     sigs: [

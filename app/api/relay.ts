@@ -2,6 +2,7 @@ import { PublicKey, Transaction } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID, decodeTransferCheckedInstruction } from "@solana/spl-token";
 import { MEMO_PROGRAM_ID } from "../src/config/chain.ts";
 import { json, sponsor } from "./_sponsor.ts";
+import { limited } from "./_limit.ts";
 
 // GET -> { feePayer, treasury }: the fee payer to set, and the owner of the account that
 // receives RockSign's 1% (on devnet the sponsor's own USDC account).
@@ -18,6 +19,8 @@ export async function GET(): Promise<Response> {
 // The sponsor only adds its fee signature to a USDC payment (provider share + optional 1% fee
 // + memo). It never appears in any instruction, so a relayed transaction cannot move its funds.
 export async function POST(request: Request): Promise<Response> {
+  const tooMany = limited(request, "relay", 60);
+  if (tooMany) return tooMany;
   const mint = process.env.VITE_USDC_MINT;
   let tx: Transaction;
   try {

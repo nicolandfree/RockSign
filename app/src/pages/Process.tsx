@@ -7,6 +7,7 @@ import type { Agreement } from "../lib/types.ts";
 import sampleAgreement from "../data/sample-agreement.json";
 import sampleEsAgreement from "../data/sample-es-agreement.json";
 import type { CallLanguage } from "../lib/transcribe.ts";
+import { getPendingUpload } from "../lib/upload.ts";
 
 // Built-in sample calls: public audio plus the terms Claude extracted from it ahead of time.
 const SAMPLES: Record<string, { audio: string; lang: CallLanguage; agreement: Agreement }> = {
@@ -14,9 +15,6 @@ const SAMPLES: Record<string, { audio: string; lang: CallLanguage; agreement: Ag
   "sample-es": { audio: "/sample/llamada.mp3", lang: "es", agreement: sampleEsAgreement as Agreement },
 };
 
-let pendingUpload: File | null = null;
-let pendingLang: CallLanguage = "en";
-export const setPendingUpload = (f: File, lang: CallLanguage) => { pendingUpload = f; pendingLang = lang; };
 
 type Step = { label: string; detail?: string; progress?: number; state: "todo" | "active" | "done" };
 const INITIAL: Step[] = [
@@ -39,7 +37,8 @@ export default function Process({ source, apiKey, onNeedKey }: { source: string;
       try {
         const sample = SAMPLES[source];
         const isSample = !!sample;
-        const lang: CallLanguage = sample?.lang ?? pendingLang;
+        const pendingUpload = getPendingUpload();
+        const lang: CallLanguage = sample?.lang ?? pendingUpload?.lang ?? "en";
         update(0, { state: "active" });
         let buf: ArrayBuffer, audioUrl: string;
         if (isSample) {
@@ -47,8 +46,8 @@ export default function Process({ source, apiKey, onNeedKey }: { source: string;
           buf = await (await fetch(audioUrl)).arrayBuffer();
         } else {
           if (!pendingUpload) return go("/");
-          buf = await pendingUpload.arrayBuffer();
-          audioUrl = URL.createObjectURL(pendingUpload);
+          buf = await pendingUpload.file.arrayBuffer();
+          audioUrl = URL.createObjectURL(pendingUpload.file);
         }
         const [hash, audio] = await Promise.all([sha256Hex(buf), decodeTo16k(buf)]);
         update(0, { state: "done", detail: `${Math.round(audio.length / 16000)} s of audio · SHA-256 ${hash.slice(0, 12)}…` });

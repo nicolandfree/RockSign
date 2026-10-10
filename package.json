@@ -1,15 +1,13 @@
 {
-  "name": "rocksign",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "rocksign-pitch",
+  "private": true,
+  "description": "Builds the RockSign pitch deck and the original concept video. The product lives in app/.",
   "type": "commonjs",
+  "scripts": {
+    "deck": "node pitch/build.mjs",
+    "concept-audio": "python3 demo/build_audio.py",
+    "concept-video": "node demo/build.mjs --render"
+  },
   "devDependencies": {
     "playwright": "^1.63.0"
   }
